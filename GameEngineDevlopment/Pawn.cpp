@@ -1,5 +1,13 @@
 #include "Pawn.h"
 
+Pawn::Pawn(std::shared_ptr<SDL_Renderer> renderer,
+	const std::string path, int x, int y, bool isTransparent) {
+
+
+	Sprite = std::unique_ptr<Bitmap>(
+		new Bitmap(renderer, path, x, y, isTransparent));
+}
+
 void Pawn::Draw() {
 
 	Sprite.get()->Draw(X, Y);
@@ -7,7 +15,7 @@ void Pawn::Draw() {
 
 int Pawn::GetX() {
 
-	Return X:
+	return X;
 }
 
 void Pawn::SetX(int x) {
@@ -17,7 +25,7 @@ void Pawn::SetX(int x) {
 
 int Pawn::GetY() {
 
-	Return Y :
+	return Y;
 }
 
 void Pawn::SetY(int y) {
