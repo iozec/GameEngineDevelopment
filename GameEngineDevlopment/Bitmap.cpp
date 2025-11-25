@@ -27,7 +27,8 @@ Bitmap::Bitmap(std::shared_ptr<SDL_Renderer> renderer,
 
 		SDL_Texture* tempTex = SDL_CreateTextureFromSurface(
 			_renderer.get(), loadedSurface);
-		_texture = std::unique_ptr<SDL_Texture>(tempTex);
+		_texture = std::unique_ptr<SDL_Texture, sdl_deleter>(tempTex, sdl_deleter());
+		 
 
 		if (_texture == nullptr)
 		{
@@ -43,6 +44,8 @@ Bitmap::Bitmap(std::shared_ptr<SDL_Renderer> renderer,
 		}
 		//Clean up loaded surface
 		SDL_DestroySurface(loadedSurface);
+
+		
 
 
 	}

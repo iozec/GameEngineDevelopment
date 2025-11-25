@@ -130,11 +130,18 @@
   <ItemGroup>
     <ClCompile Include="Bitmap.cpp" />
     <ClCompile Include="GameEngineDevlopment.cpp" />
+    <ClCompile Include="Input.cpp" />
+    <ClCompile Include="Monster.cpp" />
     <ClCompile Include="Pawn.cpp" />
+    <ClCompile Include="Player.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Bitmap.h" />
+    <ClInclude Include="Deleter.h" />
+    <ClInclude Include="Input.h" />
+    <ClInclude Include="Monster.h" />
     <ClInclude Include="Pawn.h" />
+    <ClInclude Include="Player.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

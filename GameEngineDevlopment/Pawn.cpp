@@ -6,6 +6,8 @@ Pawn::Pawn(std::shared_ptr<SDL_Renderer> renderer,
 
 	Sprite = std::unique_ptr<Bitmap>(
 		new Bitmap(renderer, path, x, y, isTransparent));
+
+	
 }
 
 void Pawn::Draw() {

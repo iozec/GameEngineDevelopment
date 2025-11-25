@@ -4,6 +4,10 @@
 #include <iostream>
 #include "SDL3/SDL.h"
 #include "Bitmap.h"
+#include "Monster.h"
+#include "Player.h"
+
+
 
 int main(int argc, char* argv[])
 {
@@ -13,29 +17,39 @@ int main(int argc, char* argv[])
     SDL_Window* win = SDL_CreateWindow("GAME", 1000, 1000, 0);
     SDL_SetWindowPosition(win, SDL_WINDOWPOS_CENTERED,
         SDL_WINDOWPOS_CENTERED);
-    SDL_Renderer* rendere = SDL_CreateRenderer(win, NULL);
-    SDL_SetRenderDrawColor(rendere, 0, 100, 200, 0);
+    std::shared_ptr<SDL_Renderer> rendere =
+    std::shared_ptr<SDL_Renderer>(SDL_CreateRenderer(win, NULL), sdl_deleter());
+    SDL_SetRenderDrawColor(rendere.get(), 0, 100, 200, 0);
     std::shared_ptr<SDL_Renderer> Rendere = std::shared_ptr<SDL_Renderer>(rendere);
 
     //Sprites
 
-    Bitmap b(Rendere,
+    Player player(Rendere,
         "./../assets/monster.bmp", 100, 200, false);
-    Bitmap c(Rendere,
+    Monster monster(Rendere,
         "./../assets/monstertrans.bmp", 200, 200, true);
 
-    while (1)
+    bool IsRunning = true;
+
+    while (IsRunning)
     {
+        SDL_Event e;
+        while (SDL_PollEvent(&e))
+        {
+
+
+
+        }
 
         SDL_RenderClear(Rendere.get());
-        b.Draw();
-        c.Draw();
+        player.Draw();
+        monster.Draw();
         SDL_RenderPresent(Rendere.get());
         SDL_Delay(16);
 
     }
 
-    SDL_DestroyRenderer(rendere);
+    //SDL_DestroyRenderer(rendere);
     SDL_DestroyWindow(win);
     SDL_Quit();
         
