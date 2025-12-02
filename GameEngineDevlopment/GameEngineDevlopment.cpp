@@ -6,6 +6,7 @@
 #include "Bitmap.h"
 #include "Monster.h"
 #include "Player.h"
+#include "Input.h"
 
 
 
@@ -18,7 +19,7 @@ int main(int argc, char* argv[])
     SDL_SetWindowPosition(win, SDL_WINDOWPOS_CENTERED,
         SDL_WINDOWPOS_CENTERED);
     std::shared_ptr<SDL_Renderer> rendere =
-    std::shared_ptr<SDL_Renderer>(SDL_CreateRenderer(win, NULL), sdl_deleter());
+        std::shared_ptr<SDL_Renderer>(SDL_CreateRenderer(win, NULL), sdl_deleter());
     SDL_SetRenderDrawColor(rendere.get(), 0, 100, 200, 0);
     std::shared_ptr<SDL_Renderer> Rendere = std::shared_ptr<SDL_Renderer>(rendere);
 
@@ -35,26 +36,32 @@ int main(int argc, char* argv[])
     {
         SDL_Event e;
         while (SDL_PollEvent(&e))
-        {
 
+            Input::INSTANCE().Update();
+        if (Input::INSTANCE().isKeyHeld(SDL_SCANCODE_UP))
+            player.UpdatePosition(0, -1);
 
+            SDL_RenderClear(Rendere.get());
+            player.Draw();
+            monster.Draw();
+            SDL_RenderPresent(Rendere.get());
 
-        }
+            Input::INSTANCE().LateUpdate();
 
-        SDL_RenderClear(Rendere.get());
-        player.Draw();
-        monster.Draw();
-        SDL_RenderPresent(Rendere.get());
-        SDL_Delay(16);
+            SDL_Delay(16);
+            //void Update();
+        
 
     }
+
+    Input in;
+
+
+
 
     //SDL_DestroyRenderer(rendere);
     SDL_DestroyWindow(win);
     SDL_Quit();
-        
-    return 0;
-
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu

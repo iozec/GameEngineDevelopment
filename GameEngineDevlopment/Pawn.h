@@ -1,5 +1,6 @@
 #pragma once
 #include "Bitmap.h"
+#include "Input.h"
 class Pawn
 {
 protected:
@@ -22,6 +23,9 @@ public:
 	void SetY(int y);
 
 	void Draw();
+	void UpdatePosition(int x, int y);
+	virtual void Update();
+
 };
 
 
