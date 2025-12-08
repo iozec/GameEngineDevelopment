@@ -25,7 +25,7 @@ bool Input::isKeyDown(SDL_Scancode scanCode)
 bool Input::isKeyHeld(SDL_Scancode scanCode)
 {
     bool result = false;
-    if (lastFrameKeyState[scanCode] == currentKeyStates[scanCode])
+    if (lastFrameKeyState[scanCode] && currentKeyStates[scanCode])
         result = true;
 
     return result;

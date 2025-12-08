@@ -12,9 +12,7 @@ public:
 	Bitmap(
 		std::shared_ptr<SDL_Renderer> renderer,
 		const std::string path, int x, int y, bool isTransparent);
-		std::unique_ptr<SDL_Texture, sdl_deleter> _texture;
-	
-	
+		std::shared_ptr<SDL_Texture> _texture;
 
 	void Draw();
 	void Draw(int x, int y);

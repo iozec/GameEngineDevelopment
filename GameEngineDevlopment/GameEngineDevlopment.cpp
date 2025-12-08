@@ -7,6 +7,7 @@
 #include "Monster.h"
 #include "Player.h"
 #include "Input.h"
+#include "debug.h"
 
 
 
@@ -32,14 +33,29 @@ int main(int argc, char* argv[])
 
     bool IsRunning = true;
 
+    Input in;
+
+    VerboseDebugPrintF(Verbosity::Error,
+        "UOSGameEngine started with %d arguments\n", argc);
+
+
+
     while (IsRunning)
     {
+
+
         SDL_Event e;
         while (SDL_PollEvent(&e))
 
-            Input::INSTANCE().Update();
+        Input::INSTANCE().Update();
         if (Input::INSTANCE().isKeyHeld(SDL_SCANCODE_UP))
             player.UpdatePosition(0, -1);
+        if (Input::INSTANCE().isKeyHeld(SDL_SCANCODE_DOWN))
+            player.UpdatePosition(0, 1);
+        if (Input::INSTANCE().isKeyHeld(SDL_SCANCODE_LEFT))
+            player.UpdatePosition(-1, 0);
+        if (Input::INSTANCE().isKeyHeld(SDL_SCANCODE_RIGHT))
+            player.UpdatePosition(1, 0);
 
             SDL_RenderClear(Rendere.get());
             player.Draw();
@@ -54,7 +70,7 @@ int main(int argc, char* argv[])
 
     }
 
-    Input in;
+
 
 
 
