@@ -1,5 +1,5 @@
 #include "Debug.h"
-
+#include "Logger.h"
 int g_verbosity = 4;
 
 int VDebugPrintF(const char* format, va_list argList)
@@ -10,6 +10,7 @@ int VDebugPrintF(const char* format, va_list argList)
     int charsWritten = vsnprintf(s_buffer, MAX_CHARS, format, argList);
 
     OutputDebugStringA(s_buffer);
+    Logger::instance()->WriteToFile(s_buffer);
 
     return charsWritten;
 

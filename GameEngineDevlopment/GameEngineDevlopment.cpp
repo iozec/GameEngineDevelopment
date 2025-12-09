@@ -8,6 +8,8 @@
 #include "Player.h"
 #include "Input.h"
 #include "debug.h"
+#include "GameObject.h"
+#include "BitmapComponent.h"
 
 
 
@@ -30,6 +32,12 @@ int main(int argc, char* argv[])
         "./../assets/monster.bmp", 100, 200, false);
     Monster monster(Rendere,
         "./../assets/monstertrans.bmp", 200, 200, true);
+    GameObject gameObject;
+    std::shared_ptr<BitmapComponent> temp = std::make_shared<BitmapComponent>(
+        rendere, "./../Assets/monster.bmp", 300, 200, false);
+    gameObject.AddComponent(temp);
+
+    BitmapComponent* temp2 = gameObject.GetComponentByType<BitmapComponent>();
 
     bool IsRunning = true;
 
@@ -58,6 +66,7 @@ int main(int argc, char* argv[])
             player.UpdatePosition(1, 0);
 
             SDL_RenderClear(Rendere.get());
+            gameObject.Update();
             player.Draw();
             monster.Draw();
             SDL_RenderPresent(Rendere.get());
