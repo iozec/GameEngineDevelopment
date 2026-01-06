@@ -10,11 +10,16 @@
 #include "debug.h"
 #include "GameObject.h"
 #include "BitmapComponent.h"
+#include "ECS.h"
+#include "RendererSystem.h"
+#include "MovementSystem.h"
 
 
 
 int main(int argc, char* argv[])
 {
+
+
     if (!SDL_Init(SDL_INIT_AUDIO | SDL_INIT_VIDEO | SDL_INIT_EVENTS)) {
         printf("error initializing SDL: %s\n", SDL_GetError());
     }
@@ -27,6 +32,11 @@ int main(int argc, char* argv[])
     std::shared_ptr<SDL_Renderer> Rendere = std::shared_ptr<SDL_Renderer>(rendere);
 
     //Sprites
+    ECS ecs;
+    RendererSystem::AddBitmapComponentToEntity(0, ecs,
+        "./../Assets/monster.bmp", rendere, false);
+    MovementSystem::AddPositonComponentToEntitiy(0, ecs, 400, 400);
+    MovementSystem::AddVelocityComponentToEntitiy(0, ecs, 1, 0, 0);
 
     Player player(Rendere,
         "./../assets/monster.bmp", 100, 200, false);
@@ -66,6 +76,8 @@ int main(int argc, char* argv[])
             player.UpdatePosition(1, 0);
 
             SDL_RenderClear(Rendere.get());
+            RendererSystem::Render(ecs, rendere);
+            MovementSystem::UpdatePositions(ecs);
             gameObject.Update();
             player.Draw();
             monster.Draw();

@@ -24,13 +24,13 @@ public:
 
 };
 template<typename componentType>
-componentType* GetCpmponentByType()
+componentType* GetComponentByType()
 {
 
 	auto it = std::find_if(Components.begin(), Components.end(),
 		[](const std::shared_ptr<I_ComponentBase>& obj)
 		{
-			return dynamic_cast<componentType*>(obj.got()) != nullptr;
+			return dynamic_cast<componentType*>(obj.get()) != nullptr;
 		}
 	);
 	if (it != Components.end())

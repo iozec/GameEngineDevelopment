@@ -132,28 +132,35 @@
     <ClCompile Include="Bitmap.cpp" />
     <ClCompile Include="BitmapComponent.cpp" />
     <ClCompile Include="Debug.cpp" />
+    <ClCompile Include="ECS.cpp" />
     <ClCompile Include="GameEngineDevlopment.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="I_ComponentBase.cpp" />
     <ClCompile Include="Logger.cpp" />
     <ClCompile Include="Monster.cpp" />
+    <ClCompile Include="MovementSystem.cpp" />
     <ClCompile Include="Pawn.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="RendererSystem.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Bitmap.h" />
     <ClInclude Include="BitmapComponent.h" />
+    <ClInclude Include="Components.hpp" />
     <ClInclude Include="Debug.h" />
     <ClInclude Include="Deleter.h" />
+    <ClInclude Include="ECS.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="I_ComponentBase.h" />
     <ClInclude Include="Logger.h" />
     <ClInclude Include="Monster.h" />
+    <ClInclude Include="MovementSystem.h" />
     <ClInclude Include="Pawn.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="RendererSystem.h" />
     <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="Transform.hpp" />
   </ItemGroup>
