@@ -18,6 +18,7 @@ VelocityECS MovementSystem::AddVelocityComponentToEntitiy(uint32_t EntityID,
 	VelocityECS vel;
 	vel.dx = InitialDX;
 	vel.dy = InitialDY;
+	vel.gravity = Gravity;
 
 	ecs.velocities[EntityID] = vel;
 	ecs.entityIDs[EntityID] |= VelocityKey;
@@ -28,10 +29,12 @@ VelocityECS MovementSystem::AddVelocityComponentToEntitiy(uint32_t EntityID,
 
 void MovementSystem::UpdatePositions(ECS& const ecs)
 {
-
-	if (ecs.entityIDs[0] & (PositionKey | VelocityKey))
+	for (int entityID = 0; entityID < MAX_ENTITIES; entityID++)
 	{
-		ecs.velocities[0].dy += ecs.velocities[0].gravity;
-		ecs.positions[0] += ecs.velocities[0];
+		if (ecs.entityIDs[entityID] & (PositionKey | VelocityKey))
+		{
+			ecs.velocities[entityID].dy += ecs.velocities[entityID].gravity;
+			ecs.positions[entityID] += ecs.velocities[entityID];
+		}
 	}
 }

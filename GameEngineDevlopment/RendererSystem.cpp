@@ -1,7 +1,7 @@
 #include "RendererSystem.h"
 
 BitmapECS RendererSystem::AddBitmapComponentToEntity(uint32_t EntityID,
-	ECS& const ecs, std::string FileLocation, std::shared_ptr<SDL_Renderer> renderer,
+	ECS& ecs, std::string FileLocation, std::shared_ptr<SDL_Renderer> renderer,
 	bool isTransparent)
 {
 	BitmapECS bitmap;
@@ -12,20 +12,23 @@ BitmapECS RendererSystem::AddBitmapComponentToEntity(uint32_t EntityID,
 
 	return bitmap;
 }
-void RendererSystem::Render(ECS& const ecs,
+void RendererSystem::Render(ECS& ecs,
 	std::shared_ptr<SDL_Renderer> renderer)
 {
-	if (ecs.entityIDs[0] & (BitmapKey | PositionKey))
+	for (int entityID = 0; entityID < MAX_ENTITIES; entityID++)
 	{
-		float width, height;
-		SDL_GetTextureSize(
-			ecs.bitmaps[0].texture.get(), &width, &height);
-		//set texture potition
-		SDL_FRect dstRect = { ecs.positions[0].X, ecs.positions[0].Y,
-		width , height };
+		if (ecs.entityIDs[entityID] & (BitmapKey | PositionKey))
+		{
+			float width, height;
+			SDL_GetTextureSize(
+				ecs.bitmaps[entityID].texture.get(), &width, &height);
+			//set texture potition
+			SDL_FRect dstRect = { ecs.positions[entityID].X, ecs.positions[entityID].Y,
+			width , height };
 
-		//render texture
-		SDL_RenderTexture(renderer.get(), ecs.bitmaps[0].texture.get(),
-			NULL, &dstRect);
+			//render texture
+			SDL_RenderTexture(renderer.get(), ecs.bitmaps[entityID].texture.get(),
+				NULL, &dstRect);
+		}
 	}
 }

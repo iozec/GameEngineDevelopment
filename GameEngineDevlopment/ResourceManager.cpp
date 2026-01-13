@@ -1,5 +1,6 @@
 #include "ResourceManager.h"
 #include "SDL3_image/SDL_image.h"
+#include "deleter.h"
 
 std::shared_ptr<SDL_Texture> ResourceManager::LoadTexture(std::string FilePath, 
 	bool isTransparent, 
@@ -33,7 +34,7 @@ std::shared_ptr<SDL_Texture> ResourceManager::LoadTexture(std::string FilePath,
 
 		SDL_Texture* tempTex = SDL_CreateTextureFromSurface(
 			renderer.get(), loadedSurface);
-		texture = std::unique_ptr<SDL_Texture>(tempTex);
+		texture = std::shared_ptr<SDL_Texture>(tempTex, sdl_deleter());
 
 
 		if (tempTex == nullptr)
@@ -61,7 +62,7 @@ std::shared_ptr<SDL_Texture> ResourceManager::LoadTexture(std::string FilePath,
 }
 
 
-ResourceManager& const ResourceManager::INSTANCE()
+ResourceManager& ResourceManager::INSTANCE()
 {
 	if (!ResourceManager::_instance)
 		ResourceManager::_instance = new ResourceManager();

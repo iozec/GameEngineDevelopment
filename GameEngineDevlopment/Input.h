@@ -17,7 +17,7 @@ class Input
 	Input();
 
 	static Input* _instance;
-	static Input& const INSTANCE();
+	static Input& INSTANCE();
 
 
 	

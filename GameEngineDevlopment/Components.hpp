@@ -1,30 +1,29 @@
+#pragma once
 #include <SDL3/SDL.h>
 #include <memory>
-uint64_t constexpr VelocityKey = 1 << 0;
-uint64_t constexpr PositionKey = 1 << 1;
-uint64_t constexpr BitmapKey = 1 << 2;
+#include <cstdint>
 
-struct VelocityECS
-{
-	float dx, dy;
-	float gravity = 1.0f;
+inline constexpr uint64_t VelocityKey = (1ULL << 0);
+inline constexpr uint64_t PositionKey = (1ULL << 1);
+inline constexpr uint64_t BitmapKey = (1ULL << 2);
+
+struct VelocityECS {
+    float dx, dy;
+    float gravity = 1.0f;
 };
 
-struct PositionECS
-{
-
-	float X, Y;
-	PositionECS operator +(const VelocityECS& other) const {
-		return { X + other.dx , other.dy };
-	}
-	PositionECS& operator+=(const VelocityECS& other) {
-		X += other.dx;
-		Y += other.dy;
-		return* this;
-	}
+struct PositionECS {
+    float X, Y;
+    PositionECS operator +(const VelocityECS& other) const {
+        return { X + other.dx , Y + other.dy }; 
+    }
+    PositionECS& operator+=(const VelocityECS& other) {
+        X += other.dx;
+        Y += other.dy;
+        return *this;
+    }
 };
 
-struct BitmapECS 
-{
-	std::shared_ptr<SDL_Texture> texture;
+struct BitmapECS {
+    std::shared_ptr<SDL_Texture> texture;
 };

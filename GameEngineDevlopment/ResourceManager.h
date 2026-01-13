@@ -13,7 +13,7 @@ public:
 		std::shared_ptr<SDL_Renderer> renderer);
 	//std::shared_ptr<SDL_Renderer> renderer;
 	static ResourceManager* _instance;
-	static ResourceManager& const INSTANCE();
+	static ResourceManager& INSTANCE();
 
 	~ResourceManager();
 

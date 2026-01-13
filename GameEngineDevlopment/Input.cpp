@@ -50,7 +50,7 @@ void Input::LateUpdate()
 
 }
 
-Input& const Input::INSTANCE()
+Input& Input::INSTANCE()
 {
     if (!Input::_instance)
         Input::_instance = new Input();

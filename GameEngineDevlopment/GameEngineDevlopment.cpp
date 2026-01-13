@@ -13,6 +13,7 @@
 #include "ECS.h"
 #include "RendererSystem.h"
 #include "MovementSystem.h"
+#include <random>
 
 
 
@@ -32,20 +33,33 @@ int main(int argc, char* argv[])
     std::shared_ptr<SDL_Renderer> Rendere = std::shared_ptr<SDL_Renderer>(rendere);
 
     //Sprites
-    ECS ecs;
-    RendererSystem::AddBitmapComponentToEntity(0, ecs,
-        "./../Assets/monster.bmp", rendere, false);
-    MovementSystem::AddPositonComponentToEntitiy(0, ecs, 400, 400);
-    MovementSystem::AddVelocityComponentToEntitiy(0, ecs, 1, 0, 0);
+      //RendererSystem::AddBitmapComponentToEntity(0, ecs,
+       // "./../Assets/monster.bmp", rendere, false);
+   // MovementSystem::AddPositonComponentToEntitiy(0, ecs, 400, 400);
+//MovementSystem::AddVelocityComponentToEntitiy(0, ecs, 5, 0, 0);
 
+    ECS ecs;
+ 
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_real_distribution<float> dist(-10.0f, 10.0f);
+  
+    for (int i = 0; i < MAX_ENTITIES; i++)
+    {
+        RendererSystem::AddBitmapComponentToEntity(i, ecs,
+            "./../assets/monster.bmp", rendere, true);
+        MovementSystem::AddPositonComponentToEntitiy(i, ecs, 100, 400);
+        float RandomX = dist(gen);
+        MovementSystem::AddVelocityComponentToEntitiy(i, ecs, RandomX, -30, 1);
+    } 
     Player player(Rendere,
-        "./../assets/monster.bmp", 100, 200, false);
-    Monster monster(Rendere,
-        "./../assets/monstertrans.bmp", 200, 200, true);
-    GameObject gameObject;
-    std::shared_ptr<BitmapComponent> temp = std::make_shared<BitmapComponent>(
-        rendere, "./../Assets/monster.bmp", 300, 200, false);
-    gameObject.AddComponent(temp);
+            "./../assets/monster.bmp", 100, 200, false);
+        Monster monster(Rendere,
+            "./../assets/monstertrans.bmp", 200, 200, true);
+        GameObject gameObject;
+        std::shared_ptr<BitmapComponent> temp = std::make_shared<BitmapComponent>(
+            rendere, "./../Assets/monster.bmp", 300, 200, false);
+        gameObject.AddComponent(temp);
 
     BitmapComponent* temp2 = gameObject.GetComponentByType<BitmapComponent>();
 
@@ -75,13 +89,13 @@ int main(int argc, char* argv[])
         if (Input::INSTANCE().isKeyHeld(SDL_SCANCODE_RIGHT))
             player.UpdatePosition(1, 0);
 
-            SDL_RenderClear(Rendere.get());
+            SDL_RenderClear(rendere.get());
             RendererSystem::Render(ecs, rendere);
             MovementSystem::UpdatePositions(ecs);
             gameObject.Update();
             player.Draw();
             monster.Draw();
-            SDL_RenderPresent(Rendere.get());
+            SDL_RenderPresent(rendere.get());
 
             Input::INSTANCE().LateUpdate();
 

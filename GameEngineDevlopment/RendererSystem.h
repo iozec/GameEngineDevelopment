@@ -11,9 +11,9 @@
 {
 public:
 	static BitmapECS AddBitmapComponentToEntity(uint32_t EntityID,
-		ECS& const ecs, std::string FileLocation,
+		ECS& ecs, std::string FileLocation,
 		std::shared_ptr<SDL_Renderer> renderer, bool isTransparent = true);
 
-	static void Render(ECS& const ecs, std::shared_ptr<SDL_Renderer> renderer);
+	static void Render(ECS& ecs, std::shared_ptr<SDL_Renderer> renderer);
 };
 

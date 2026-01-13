@@ -1,4 +1,5 @@
 #include "GameObject.h"
+#include <algorithm>
 
 
 void GameObject::AddComponent(std::shared_ptr<I_ComponentBase> component)
