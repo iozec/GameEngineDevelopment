@@ -1,6 +1,7 @@
 #pragma once
 #include "Pawn.h"
-class Monster : public Pawn
+#include "Subscriber.h"
+class Monster : public Pawn, public Subscriber
 {
 public:
 
@@ -9,7 +10,8 @@ public:
 	Monster(std::shared_ptr<SDL_Renderer> renderer,
 		const std::string path, int x, int y, bool isTransparent);
 	
-	void Update() override;
+
+	void Receive(const Message* message, const std::string& topic) override;
 	
 };
 

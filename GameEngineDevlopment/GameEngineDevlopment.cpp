@@ -52,6 +52,8 @@ int main(int argc, char* argv[])
         float RandomX = dist(gen);
         MovementSystem::AddVelocityComponentToEntitiy(i, ecs, RandomX, -30, 1);
     } 
+    Broker broker;
+
     Player player(Rendere,
             "./../assets/monster.bmp", 100, 200, false);
         Monster monster(Rendere,
@@ -60,6 +62,8 @@ int main(int argc, char* argv[])
         std::shared_ptr<BitmapComponent> temp = std::make_shared<BitmapComponent>(
             rendere, "./../Assets/monster.bmp", 300, 200, false);
         gameObject.AddComponent(temp);
+
+        monster.Subscribe("Test");
 
     BitmapComponent* temp2 = gameObject.GetComponentByType<BitmapComponent>();
 

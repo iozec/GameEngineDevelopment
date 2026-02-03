@@ -1,8 +1,11 @@
 #pragma once
 #include "Pawn.h"
-class Player : public Pawn
-{
+#include "Publisher.h"
+class Player :
 
+	public Pawn,
+	public Publisher
+{
 public:
 
 	Player(std::shared_ptr<SDL_Renderer> renderer,
