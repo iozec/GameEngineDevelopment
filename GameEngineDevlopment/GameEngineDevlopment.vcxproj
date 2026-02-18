@@ -71,7 +71,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LibraryPath>$(SolutionDir)\Libraries\SDL3_image-3.2.4\lib\x64;$(SolutionDir)\Libraries\SDL3-3.2.26\lib\x64;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)\Libraries\lua;$(SolutionDir)\Libraries\SDL3_image-3.2.4\lib\x64;$(SolutionDir)\Libraries\SDL3-3.2.26\lib\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -104,14 +104,14 @@
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)\Libraries\SDL3_image-3.2.4\include;$(SolutionDir)\Libraries\SDL3-3.2.26\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <ConformanceMode>false</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)\Libraries\SDL3_image-3.2.4\include;$(SolutionDir)\Libraries\SDL3-3.2.26\include;$(SolutionDir)\Libraries\lua\include;$(SolutionDir)\Libraries;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>SDL3.lib;SDL3_image.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL3.lib;%(AdditionalDependencies);SDL3_image.lib;liblua54.a</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -147,6 +147,7 @@
     <ClCompile Include="Publisher.cpp" />
     <ClCompile Include="RendererSystem.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
+    <ClCompile Include="StackArenaAllocator.cpp" />
     <ClCompile Include="Subscriber.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -169,6 +170,7 @@
     <ClInclude Include="Publisher.h" />
     <ClInclude Include="RendererSystem.h" />
     <ClInclude Include="ResourceManager.h" />
+    <ClInclude Include="StackArenaAllocator.h" />
     <ClInclude Include="Subscriber.h" />
     <ClInclude Include="Transform.hpp" />
   </ItemGroup>

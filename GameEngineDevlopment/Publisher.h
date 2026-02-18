@@ -1,18 +1,24 @@
 #pragma once
+#include <cstdint>
 #include <string>
 
-#include "Broker.h"
+class Broker;
 class Message;
 
 
 class Publisher
 {
-	Broker broker;
+	Broker* broker;
 public:
-	Publisher(Broker& broker) : broker(&broker) {}
+
+	Publisher(Broker* b) : broker(b) {}
+
+	void Publish(const std::string& topic, Message* message) const;
+};
+
+	/*Publisher(Broker& broker) : broker(&broker) {}
 	void Publish(const std::string& topic, Message* message) const
 	{
 		broker->Publish(topic, message);
-	}
-};
+	}*/
 

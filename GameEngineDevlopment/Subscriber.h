@@ -9,9 +9,9 @@ class Subscriber
 	Broker* broker;
 public:
 	Subscriber(Broker& broker) : broker(&broker) {}
-	void Subscribe(const std::string& topic) {
-		broker->Subscribe(topic, this);
-	}
-	virtual void Recieve(const Message* message, const std::string& topic) = 0;
+
+	void Subscribe(const std::string& topic);
+
+	virtual void Receive(const Message* message, const std::string& topic) = 0;
 };
 

@@ -1,6 +1,8 @@
 // GameEngineDevlopment.cpp : This file contains the 'main' function. Program execution begins and ends there.
 //
 
+
+#include "sol/sol.hpp"
 #include <iostream>
 #include "SDL3/SDL.h"
 #include "Bitmap.h"
@@ -14,11 +16,32 @@
 #include "RendererSystem.h"
 #include "MovementSystem.h"
 #include <random>
-
+#include "StackArenaAllocator.h"
 
 
 int main(int argc, char* argv[])
 {
+/////
+///// Stack arena allocator
+/////
+    StackArenaAllocator stack(1024); // 1 KB stack allocator
+
+    // Vector backed by stack allocator
+    std::pmr::vector<int> numbers(&stack);
+    for (int i = 0; i < 10; ++i)
+        numbers.push_back(i * 10);
+
+    std::cout << "Numbers: ";
+    for (int n : numbers) std::cout << n << " ";
+    std::cout << "\n";
+
+    // String backed by same stack allocator
+    std::pmr::string msg("Hello from StackArena!", &stack);
+    std::cout << msg << "\n";
+
+    // Free everything at once
+    std::cout << "Resetting stack...\n";
+    stack.reset();
 
 
     if (!SDL_Init(SDL_INIT_AUDIO | SDL_INIT_VIDEO | SDL_INIT_EVENTS)) {
@@ -52,12 +75,48 @@ int main(int argc, char* argv[])
         float RandomX = dist(gen);
         MovementSystem::AddVelocityComponentToEntitiy(i, ecs, RandomX, -30, 1);
     } 
-    Broker broker;
+    Broker* broker = Broker::Instance();
+
+    //////////////////////////////LUA INTEGRATION//////////////////////////////////
+
+    sol::state lua;
+    lua.open_libraries(sol::lib::base);
+
+    // Load Lua script
+    lua.script_file("../../../luaSrc/Enemy.lua");
+
+    // Bind Player so Lua can interact with it (if needed later)
+    lua.new_usertype<Player>("Player",
+        "health", &Player::health,
+        "takeDamage", &Player::takeDamage
+    );
+
+    // Get enemy table from Lua
+    sol::table enemy = lua["enemy"];
+    std::string name = enemy["name"];
+    int enemyHealth = enemy["health"];
+
+    std::cout << "Enemy spawned: " << name << " with " << enemyHealth << " HP\n";
+
+    Player player1(rendere,
+        "../../../Assets/monster.bmp",
+        100, 200, false, *broker);
+
+    // Call enemy.attack(Player.health)
+    sol::function attackFunc = enemy["attack"];
+    int newPlayerHealth = attackFunc(player1.health);
+    player1.health = newPlayerHealth;
+
+    // Call enemy.onDamage(12)
+    sol::function onDamageFunc = enemy["onDamage"];
+    onDamageFunc(12);
+
+    /////////////////////////////////end lua integration/////////////////////////////////
 
     Player player(Rendere,
-            "./../assets/monster.bmp", 100, 200, false);
+        "./../assets/monster.bmp", 100, 200, false, *broker);
         Monster monster(Rendere,
-            "./../assets/monstertrans.bmp", 200, 200, true);
+        "./../assets/monstertrans.bmp", 200, 200, true, *broker);
         GameObject gameObject;
         std::shared_ptr<BitmapComponent> temp = std::make_shared<BitmapComponent>(
             rendere, "./../Assets/monster.bmp", 300, 200, false);
@@ -81,7 +140,11 @@ int main(int argc, char* argv[])
 
 
         SDL_Event e;
-        while (SDL_PollEvent(&e))
+        while (SDL_PollEvent(&e)) {
+            if (e.type == SDL_EVENT_QUIT) {
+                IsRunning = false;
+            }
+        }
 
         Input::INSTANCE().Update();
         if (Input::INSTANCE().isKeyHeld(SDL_SCANCODE_UP))

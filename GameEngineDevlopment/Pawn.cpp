@@ -1,7 +1,8 @@
 #include "Pawn.h"
+#include "Broker.h"
 
 Pawn::Pawn(std::shared_ptr<SDL_Renderer> renderer,
-	const std::string path, int x, int y, bool isTransparent) {
+	const std::string path, int x, int y, bool isTransparent, Broker& broker) {
 
 
 	Sprite = std::unique_ptr<Bitmap>(

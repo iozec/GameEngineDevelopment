@@ -1,6 +1,10 @@
 #pragma once
 #include "Pawn.h"
 #include "Publisher.h"
+#include <iostream>
+
+class Broker;
+
 class Player :
 
 	public Pawn,
@@ -8,9 +12,15 @@ class Player :
 {
 public:
 
-	Player(std::shared_ptr<SDL_Renderer> renderer,
-		const std::string path, int x, int y, bool isTransparent);
+	int health = 100;
+	void takeDamage(int damage) {
+		health -= damage;
+		std::cout << "[C++]Player took " << damage << " damage, health now " << health << "\n";
+	}
 
+	Player(std::shared_ptr<SDL_Renderer> renderer,
+		const std::string path, int x, int y, bool isTransparent, Broker& broker);
+	
 	void Update() override;
 
 };

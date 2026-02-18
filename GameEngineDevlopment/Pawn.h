@@ -1,31 +1,33 @@
 #pragma once
+#include <memory>
+#include <string>
+#include "SDL3/SDL.h"
 #include "Bitmap.h"
-#include "Input.h"
-class Pawn
-{
+
+class Broker;
+
+class Pawn {
 protected:
-	std::unique_ptr<Bitmap> Sprite;
-
-
-	int X;
-	int Y;
+    int X = 0; 
+    int Y = 0;
+    std::unique_ptr<Bitmap> Sprite;
+    Broker* broker; 
 
 public:
+    Pawn(std::shared_ptr<SDL_Renderer> renderer, const std::string path,
+        int x, int y, bool isTransparent, Broker& broker);
 
-	// Constructor
-	Pawn(std::shared_ptr<SDL_Renderer> renderer,
-		const std::string path, int x, int y, bool isTransparent);
+    virtual ~Pawn() {}
 
+    void UpdatePosition(int x, int y);
+    void Draw();
 
-	int GetX();
-	void SetX(int x);
-	int GetY();
-	void SetY(int y);
+    int GetX();
+    void SetX(int x);
+    int GetY();
+    void SetY(int y);
 
-	void Draw();
-	void UpdatePosition(int x, int y);
-	virtual void Update();
-
+    virtual void Update();
 };
 
 

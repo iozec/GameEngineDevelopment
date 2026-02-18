@@ -4,9 +4,10 @@
 
 class Message
 {
-	std::string message;
+	std::string messageText;
 public:
-	Message(std::string message) : message(message) {}
-	std::string getMessage() const { return message; }
+	Message(const std::string& message) : messageText(message) {}
+
+	std::string getMessage() const { return messageText; }
 };
 
