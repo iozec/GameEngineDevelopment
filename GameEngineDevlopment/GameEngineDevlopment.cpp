@@ -2,7 +2,7 @@
 //
 
 
-#include "sol/sol.hpp"
+
 #include <iostream>
 #include "SDL3/SDL.h"
 #include "Bitmap.h"
@@ -17,6 +17,8 @@
 #include "MovementSystem.h"
 #include <random>
 #include "StackArenaAllocator.h"
+
+#include "sol/sol.hpp"
 
 
 int main(int argc, char* argv[])
@@ -83,7 +85,7 @@ int main(int argc, char* argv[])
     lua.open_libraries(sol::lib::base);
 
     // Load Lua script
-    lua.script_file("../../../luaSrc/Enemy.lua");
+    lua.script_file("./../luaSrc/Enemy.lua");
 
     // Bind Player so Lua can interact with it (if needed later)
     lua.new_usertype<Player>("Player",
@@ -99,7 +101,7 @@ int main(int argc, char* argv[])
     std::cout << "Enemy spawned: " << name << " with " << enemyHealth << " HP\n";
 
     Player player1(rendere,
-        "../../../Assets/monster.bmp",
+        "./../Assets/monster.bmp",
         100, 200, false, *broker);
 
     // Call enemy.attack(Player.health)
