@@ -19,6 +19,7 @@
 #include "StackArenaAllocator.h"
 
 #include "sol/sol.hpp"
+#include "ScriptComponent.h"
 
 
 int main(int argc, char* argv[])
@@ -120,9 +121,16 @@ int main(int argc, char* argv[])
         Monster monster(Rendere,
         "./../assets/monstertrans.bmp", 200, 200, true, *broker);
         GameObject gameObject;
+
+        gameObject.transform.SetX(400);
+        gameObject.transform.SetY(400);
+
         std::shared_ptr<BitmapComponent> temp = std::make_shared<BitmapComponent>(
-            rendere, "./../Assets/monster.bmp", 300, 200, false);
+            rendere, "./../Assets/monster.bmp", 300, 200, false, &gameObject);
         gameObject.AddComponent(temp);
+        std::shared_ptr<ScriptComponent> scriptTest = std::make_shared<ScriptComponent>(
+            "./../luaSrc/ComponentTest.lua", &gameObject);
+        gameObject.AddComponent(scriptTest);
 
         monster.Subscribe("Test");
 

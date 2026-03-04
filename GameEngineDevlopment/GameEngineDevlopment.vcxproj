@@ -147,6 +147,7 @@
     <ClCompile Include="Publisher.cpp" />
     <ClCompile Include="RendererSystem.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
+    <ClCompile Include="ScriptComponent.cpp" />
     <ClCompile Include="StackArenaAllocator.cpp" />
     <ClCompile Include="Subscriber.cpp" />
   </ItemGroup>
@@ -170,6 +171,7 @@
     <ClInclude Include="Publisher.h" />
     <ClInclude Include="RendererSystem.h" />
     <ClInclude Include="ResourceManager.h" />
+    <ClInclude Include="ScriptComponent.h" />
     <ClInclude Include="StackArenaAllocator.h" />
     <ClInclude Include="Subscriber.h" />
     <ClInclude Include="Transform.hpp" />

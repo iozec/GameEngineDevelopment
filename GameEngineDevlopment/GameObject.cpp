@@ -24,3 +24,4 @@ void GameObject::Update()
 		component->Update();
 	}
 }
+
