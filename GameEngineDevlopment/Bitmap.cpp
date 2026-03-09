@@ -1,5 +1,6 @@
 #include "Bitmap.h"
 #include "ResourceManager.h"	
+#include "Pawn.h"
 Bitmap::Bitmap(std::shared_ptr<SDL_Renderer> renderer,
 	const std::string path, int x, int y, bool isTransparent)
 { 
@@ -15,6 +16,19 @@ Bitmap::Bitmap(std::shared_ptr<SDL_Renderer> renderer,
 	_width = w;
 	_height = h;
 }
+
+SDL_Rect Bitmap::GetImageBounds() const
+{
+	SDL_Rect a = { _xPosition, _yPosition, _width, _height };
+	return a;
+}
+
+std::shared_ptr<SDL_Renderer> Bitmap::GetRenderer() const
+{
+	return std::shared_ptr<SDL_Renderer>();
+}
+
+
 
 void Bitmap::Draw()
 {

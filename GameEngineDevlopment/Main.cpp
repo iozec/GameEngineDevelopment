@@ -55,6 +55,7 @@ int main(int argc, char* argv[])
         SDL_WINDOWPOS_CENTERED);
     std::shared_ptr<SDL_Renderer> rendere =
         std::shared_ptr<SDL_Renderer>(SDL_CreateRenderer(win, NULL), sdl_deleter());
+    SDL_Color backgroundColor = { 0, 100, 200, 255 };
     SDL_SetRenderDrawColor(rendere.get(), 0, 100, 200, 0);
     std::shared_ptr<SDL_Renderer> Rendere = std::shared_ptr<SDL_Renderer>(rendere);
 
@@ -73,7 +74,7 @@ int main(int argc, char* argv[])
     for (int i = 0; i < MAX_ENTITIES; i++)
     {
         RendererSystem::AddBitmapComponentToEntity(i, ecs,
-            "./../assets/monster.bmp", rendere, true);
+            "./../assets/monstertrans.bmp", rendere, true);
         MovementSystem::AddPositonComponentToEntitiy(i, ecs, 100, 400);
         float RandomX = dist(gen);
         MovementSystem::AddVelocityComponentToEntitiy(i, ecs, RandomX, -30, 1);
@@ -117,7 +118,7 @@ int main(int argc, char* argv[])
     /////////////////////////////////end lua integration/////////////////////////////////
 
     Player player(Rendere,
-        "./../assets/monster.bmp", 100, 200, false, *broker);
+        "./../assets/monster.bmp", 100, 200, true, *broker);
         Monster monster(Rendere,
         "./../assets/monstertrans.bmp", 200, 200, true, *broker);
         GameObject gameObject;
@@ -126,7 +127,7 @@ int main(int argc, char* argv[])
         gameObject.transform.SetY(400);
 
         std::shared_ptr<BitmapComponent> temp = std::make_shared<BitmapComponent>(
-            rendere, "./../Assets/monster.bmp", 300, 200, false, &gameObject);
+            rendere, "./../Assets/monstertrans.bmp", 300, 200, true, &gameObject);
         gameObject.AddComponent(temp);
         std::shared_ptr<ScriptComponent> scriptTest = std::make_shared<ScriptComponent>(
             "./../luaSrc/ComponentTest.lua", &gameObject);
@@ -166,12 +167,30 @@ int main(int argc, char* argv[])
         if (Input::INSTANCE().isKeyHeld(SDL_SCANCODE_RIGHT))
             player.UpdatePosition(1, 0);
 
+        // Update background color based on input
+        if (Input::INSTANCE().isKeyHeld(SDL_SCANCODE_1))
+            backgroundColor = { 255, 0, 0, 255 };
+
+        if (Input::INSTANCE().isKeyHeld(SDL_SCANCODE_2))
+            backgroundColor = { 0, 255, 0, 255 };
+
+        if (Input::INSTANCE().isKeyHeld(SDL_SCANCODE_3))
+            backgroundColor = { 0, 0, 255, 255 };
+
+        if (Input::INSTANCE().isKeyHeld(SDL_SCANCODE_4))
+            backgroundColor = { 0, 100, 200, 128 };
+
+        
+
             SDL_RenderClear(rendere.get());
-            RendererSystem::Render(ecs, rendere);
+
             MovementSystem::UpdatePositions(ecs);
+            RendererSystem::Render(ecs, rendere);
             gameObject.Update();
+
             player.Draw();
             monster.Draw();
+
             SDL_RenderPresent(rendere.get());
 
             Input::INSTANCE().LateUpdate();

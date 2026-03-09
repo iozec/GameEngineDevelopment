@@ -8,8 +8,7 @@ class Broker;
 
 class Pawn {
 protected:
-    int X = 0; 
-    int Y = 0;
+    SDL_Point Position;
     std::unique_ptr<Bitmap> Sprite;
     Broker* broker; 
 
@@ -17,7 +16,13 @@ public:
     Pawn(std::shared_ptr<SDL_Renderer> renderer, const std::string path,
         int x, int y, bool isTransparent, Broker& broker);
 
+   
+
+
     virtual ~Pawn() {}
+
+    SDL_Rect GetCollisionBounds() const;
+    void DrawCollider(SDL_Rect Collider) const;
 
     void UpdatePosition(int x, int y);
     void Draw();

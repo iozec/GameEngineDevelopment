@@ -134,7 +134,7 @@
     <ClCompile Include="Broker.cpp" />
     <ClCompile Include="Debug.cpp" />
     <ClCompile Include="ECS.cpp" />
-    <ClCompile Include="GameEngineDevlopment.cpp" />
+    <ClCompile Include="Main.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="I_ComponentBase.cpp" />

@@ -14,6 +14,11 @@ public:
 		const std::string path, int x, int y, bool isTransparent);
 		std::shared_ptr<SDL_Texture> _texture;
 
+		SDL_Rect GetImageBounds() const;
+		std::shared_ptr<SDL_Renderer> GetRenderer() const;
+
+
+
 	void Draw();
 	void Draw(int x, int y);
 private:
