@@ -1,13 +1,14 @@
 #pragma once
-#include <string>
-
-
-class Message
+#include "IEventData.h" 
+#include "Publisher.h"
+class Message :
+	public IEventData
 {
-	std::string messageText;
+	std::string message;
 public:
-	Message(const std::string& message) : messageText(message) {}
-
-	std::string getMessage() const { return messageText; }
+	Message(const Publisher& sender, std::string message) 
+		:IEventData(sender), message(message) {}
+	std::string getMessage() const { return message; }
 };
+
 

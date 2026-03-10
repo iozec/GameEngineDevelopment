@@ -25,7 +25,7 @@ SDL_Rect Bitmap::GetImageBounds() const
 
 std::shared_ptr<SDL_Renderer> Bitmap::GetRenderer() const
 {
-	return std::shared_ptr<SDL_Renderer>();
+	return _renderer;
 }
 
 

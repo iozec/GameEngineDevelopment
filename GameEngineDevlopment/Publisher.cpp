@@ -2,7 +2,7 @@
 #include "Broker.h"
 #include "Message.h"
 
-void Publisher::Publish(const std::string& topic, Message* message) const
+void Publisher::Publish(const std::string& topic, IEventData* message) const
 {
     if (broker) {
         broker->Publish(topic, message);

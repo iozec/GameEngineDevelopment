@@ -13,7 +13,7 @@ void Broker::Subscribe(const std::string& topic, Subscriber* sub) {
 }
 
 
-void Broker::Publish(const std::string& topic, Message* message) {
+void Broker::Publish(const std::string& topic, IEventData* message) {
     topics[topic].push(message);
 
    

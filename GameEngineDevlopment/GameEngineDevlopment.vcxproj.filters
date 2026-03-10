@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="imGui">
+      <UniqueIdentifier>{bc1cda4f-5d1a-43d7-bb04-9552e63d2937}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="imGui\Backends">
+      <UniqueIdentifier>{8d6a3354-6a31-4480-a472-e2942a45cd17}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -66,7 +72,7 @@
     <ClCompile Include="Publisher.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Message.cpp">
+    <ClCompile Include="IEventData.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Subscriber.cpp">
@@ -76,6 +82,30 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ScriptComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="imGui\imgui.cpp">
+      <Filter>imGui</Filter>
+    </ClCompile>
+    <ClCompile Include="imGui\imgui_demo.cpp">
+      <Filter>imGui</Filter>
+    </ClCompile>
+    <ClCompile Include="imGui\imgui_draw.cpp">
+      <Filter>imGui</Filter>
+    </ClCompile>
+    <ClCompile Include="imGui\imgui_tables.cpp">
+      <Filter>imGui</Filter>
+    </ClCompile>
+    <ClCompile Include="imGui\imgui_widgets.cpp">
+      <Filter>imGui</Filter>
+    </ClCompile>
+    <ClCompile Include="imGui\backends\imgui_impl_sdlrenderer3.cpp">
+      <Filter>imGui\Backends</Filter>
+    </ClCompile>
+    <ClCompile Include="imGui\backends\imgui_impl_sdl3.cpp">
+      <Filter>imGui\Backends</Filter>
+    </ClCompile>
+    <ClCompile Include="Message.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -137,7 +167,7 @@
     <ClInclude Include="Publisher.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Message.h">
+    <ClInclude Include="IEventData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Subscriber.h">
@@ -147,6 +177,33 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ScriptComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="imGui\imconfig.h">
+      <Filter>imGui</Filter>
+    </ClInclude>
+    <ClInclude Include="imGui\imgui.h">
+      <Filter>imGui</Filter>
+    </ClInclude>
+    <ClInclude Include="imGui\imgui_internal.h">
+      <Filter>imGui</Filter>
+    </ClInclude>
+    <ClInclude Include="imGui\imstb_rectpack.h">
+      <Filter>imGui</Filter>
+    </ClInclude>
+    <ClInclude Include="imGui\imstb_textedit.h">
+      <Filter>imGui</Filter>
+    </ClInclude>
+    <ClInclude Include="imGui\imstb_truetype.h">
+      <Filter>imGui</Filter>
+    </ClInclude>
+    <ClInclude Include="imGui\backends\imgui_impl_sdlrenderer3.h">
+      <Filter>imGui\Backends</Filter>
+    </ClInclude>
+    <ClInclude Include="imGui\backends\imgui_impl_sdl3.h">
+      <Filter>imGui\Backends</Filter>
+    </ClInclude>
+    <ClInclude Include="Message.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

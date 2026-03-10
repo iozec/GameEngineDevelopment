@@ -12,6 +12,6 @@ public:
 
 	void Subscribe(const std::string& topic);
 
-	virtual void Receive(const Message* message, const std::string& topic) = 0;
+	virtual void Receive(const IEventData* message, const std::string& topic) = 0;
 };
 

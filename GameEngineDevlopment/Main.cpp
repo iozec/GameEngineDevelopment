@@ -2,7 +2,9 @@
 //
 
 
-
+#include "imGui.h"
+#include "imGUI/backends/imgui_impl_sdl3.h"
+#include "imGUI/backends/imgui_impl_sdlrenderer3.h"
 #include <iostream>
 #include "SDL3/SDL.h"
 #include "Bitmap.h"
@@ -20,6 +22,8 @@
 
 #include "sol/sol.hpp"
 #include "ScriptComponent.h"
+
+
 
 
 int main(int argc, char* argv[])
@@ -144,7 +148,38 @@ int main(int argc, char* argv[])
     VerboseDebugPrintF(Verbosity::Error,
         "UOSGameEngine started with %d arguments\n", argc);
 
+    //////////////////////
+// ImGUI
+//////////////////////
 
+// Setup Dear ImGui context
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;    // Enable Keyboard Controls
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;     // Enable Gamepad Controls
+
+    // Setup Dear ImGui style
+    ImGui::StyleColorsDark();
+    //ImGui::StyleColorsLight();
+
+    // Setup scaling
+    ImGuiStyle& style = ImGui::GetStyle();
+    float main_scale = SDL_GetDisplayContentScale(SDL_GetPrimaryDisplay());
+    style.ScaleAllSizes(main_scale);     // Bake a fixed style scale.
+    // (Until we have a solution for dynamic style scaling, changing this
+    // requires resetting style + calling this again)
+    style.FontScaleDpi = main_scale;     // Set initial font scale.
+    // (Using io.ConfigFlags |= ImGuiConfigFlags_DpiScaleFonts = true makes this unnecessary.
+    // We leave both here for documentation purpose)
+
+    // Setup Platform/Renderer backends
+    ImGui_ImplSDL3_InitForSDLRenderer(win, rendere.get());
+    ImGui_ImplSDLRenderer3_Init(rendere.get());
+
+    //////////////////////
+    // ImGUI
+    //////////////////////
 
     while (IsRunning)
     {
@@ -152,20 +187,28 @@ int main(int argc, char* argv[])
 
         SDL_Event e;
         while (SDL_PollEvent(&e)) {
-            if (e.type == SDL_EVENT_QUIT) {
+            
+			ImGui_ImplSDL3_ProcessEvent(&e);
+			switch (e.type) {
+
+
+                case SDL_EVENT_QUIT:
                 IsRunning = false;
+				break;
+                default:
+                    break;
             }
         }
 
         Input::INSTANCE().Update();
-        if (Input::INSTANCE().isKeyHeld(SDL_SCANCODE_UP))
+        /*if (Input::INSTANCE().isKeyHeld(SDL_SCANCODE_UP))
             player.UpdatePosition(0, -1);
         if (Input::INSTANCE().isKeyHeld(SDL_SCANCODE_DOWN))
             player.UpdatePosition(0, 1);
         if (Input::INSTANCE().isKeyHeld(SDL_SCANCODE_LEFT))
             player.UpdatePosition(-1, 0);
         if (Input::INSTANCE().isKeyHeld(SDL_SCANCODE_RIGHT))
-            player.UpdatePosition(1, 0);
+            player.UpdatePosition(1, 0);*/
 
         // Update background color based on input
         if (Input::INSTANCE().isKeyHeld(SDL_SCANCODE_1))
@@ -184,14 +227,55 @@ int main(int argc, char* argv[])
 
             SDL_RenderClear(rendere.get());
 
+            // Start the Dear ImGui frame
+            ImGui_ImplSDLRenderer3_NewFrame();
+            ImGui_ImplSDL3_NewFrame();
+            ImGui::NewFrame();
+
+            // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()!
+            // You can browse its code to learn more about Dear ImGui).
+            ImGui::ShowDemoWindow();
+
+			ImGui::Begin("the First Window");      // Create a window called "Hello, world!" and append into it.)
+            if (ImGui::Button("Press me"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
+                std::cout << "Button Pressed" << std::endl;
+
+            static float test[2];
+			ImGui::InputFloat2("Test Input float", test);
+            ImGui::End();
+
             MovementSystem::UpdatePositions(ecs);
             RendererSystem::Render(ecs, rendere);
             gameObject.Update();
 
+            
+            //player.DrawCollider(player.GetCollisionBounds());
+            player.Update();
+
+            int oldY = player.Position.y;
+
+            player.IsOverlapping(monster, player.DeltaMove);
+
+            if (player.Position.y == oldY + player.DeltaMove.y && player.DeltaMove.y > 0)
+                player.Grounded = false;
+            else if (player.DeltaMove.y >= 0)
+                player.Grounded = (player.Position.y < oldY + player.DeltaMove.y);   // hit ground
             player.Draw();
+
             monster.Draw();
+            //monster.DrawCollider(monster.GetCollisionBounds());
+            // 
+            // Rendering
+            ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+            ImGui::Render();
+            SDL_SetRenderScale(rendere.get(), io.DisplayFramebufferScale.x, io.DisplayFramebufferScale.y);
+            SDL_SetRenderDrawColorFloat(rendere.get(), clear_color.x, clear_color.y, clear_color.z, clear_color.w);
+            ImGui_ImplSDLRenderer3_RenderDrawData(ImGui::GetDrawData(), rendere.get());
 
             SDL_RenderPresent(rendere.get());
+
+            SDL_RenderPresent(rendere.get());
+
 
             Input::INSTANCE().LateUpdate();
 

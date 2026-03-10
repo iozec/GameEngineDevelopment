@@ -3,7 +3,7 @@
 #include <string>
 
 class Broker;
-class Message;
+class IEventData;
 
 
 class Publisher
@@ -13,7 +13,7 @@ public:
 
 	Publisher(Broker* b) : broker(b) {}
 
-	void Publish(const std::string& topic, Message* message) const;
+	void Publish(const std::string& topic, IEventData* message) const;
 };
 
 	/*Publisher(Broker& broker) : broker(&broker) {}

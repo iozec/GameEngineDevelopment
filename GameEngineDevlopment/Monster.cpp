@@ -10,7 +10,7 @@ Monster::Monster(std::shared_ptr<SDL_Renderer> renderer,
 {
 }
 
-void Monster::Receive(const Message* message, const std::string& topic)
+void Monster::Receive(const IEventData* message, const std::string& topic)
 {
 	std::cout << "Received message: " << message->getMessage()
 		<< ", from topic: " << topic << std::endl;

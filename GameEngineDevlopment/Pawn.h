@@ -8,7 +8,6 @@ class Broker;
 
 class Pawn {
 protected:
-    SDL_Point Position;
     std::unique_ptr<Bitmap> Sprite;
     Broker* broker; 
 
@@ -17,7 +16,8 @@ public:
         int x, int y, bool isTransparent, Broker& broker);
 
    
-
+    void SetDeltaMove(int x, int y);
+    bool IsOverlapping(const Pawn& Other, const SDL_Point& Delta);
 
     virtual ~Pawn() {}
 
@@ -33,6 +33,14 @@ public:
     void SetY(int y);
 
     virtual void Update();
+
+    int speed = 1;
+	int gravity = 1;
+	int maxFallSpeed = 10;
+    bool Grounded = false;
+
+    SDL_Point Position;
+    SDL_Point DeltaMove;
 };
 
 
