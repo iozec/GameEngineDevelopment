@@ -1,8 +1,14 @@
 #include "Pawn.h"
 #include "Broker.h"
+#include "MouseEventData.h"
+#include <iostream>
+#include "imgui.h"
+#include "EditorGui.h"
+
+int Pawn::CurrentID = 0;
 
 Pawn::Pawn(std::shared_ptr<SDL_Renderer> renderer,
-	const std::string path, int x, int y, bool isTransparent, Broker& broker) {
+	const std::string path, int x, int y, bool isTransparent ) {
 
 
 	Sprite = std::unique_ptr<Bitmap>(
@@ -11,6 +17,43 @@ Pawn::Pawn(std::shared_ptr<SDL_Renderer> renderer,
 	Position.x = x;
 	Position.y = y;
 
+	ID = CurrentID++;
+}
+
+void Pawn::Receive(const IEventData* EventData, const std::string& topic)
+{
+	//Pawn::Receive(EventData, topic);
+	const MouseEventData* mouseEventData = static_cast<const MouseEventData*>(EventData);
+
+	if (topic == "MousePositionUpdate")
+	{
+
+	}
+
+	if (topic == "MouseWheelUpdate")
+	{
+	}
+
+	if (topic == "MouseButtonUpdate")
+	{
+		SDL_Point mousePosition
+		{
+			mouseEventData->mousePositon.x,
+			mouseEventData->mousePositon.y
+		};
+
+		SDL_Rect ImageBounds = GetCollisionBounds();
+
+		if (mouseEventData->mouseButton.button == SDL_BUTTON_LEFT &&
+			mouseEventData->mouseButton.clicks == 1 &&
+			SDL_PointInRect(&mousePosition, &ImageBounds) &&
+			mouseEventData->mouseButton.type == SDL_EVENT_MOUSE_BUTTON_DOWN)
+		{
+			std::cout << "< clicked on image" << std::endl;
+			EditorGui::INSTANCE().AttachChildWindow(this);
+
+		}
+	}
 
 }
 
@@ -55,6 +98,27 @@ bool Pawn::IsOverlapping(const Pawn& Other, const SDL_Point& Delta)
 	return isColliding;
 }
 
+
+void Pawn::DrawWindow()
+{
+	ImGui::Begin((std::string("Pawn Window") + std::to_string(ID)).c_str());
+
+	if (ImGui::Button("Close"))
+	{
+		EditorGui::INSTANCE().RemoveChildWindow(dynamic_cast<IGuiWindow*>(this));
+	}
+
+	int pos[2] = { Position.x, Position.y };
+	ImGui::InputInt2("Position", pos);
+	Position.x = pos[0];
+	Position.y = pos[1];
+
+	ImGui::InputInt("Speed", &speed);
+	ImGui::InputInt("Gravity", &gravity);
+	ImGui::InputInt("Max Fall Speed", &maxFallSpeed);
+
+	ImGui::End();
+}
 
 void Pawn::UpdatePosition(int x, int y)
 {

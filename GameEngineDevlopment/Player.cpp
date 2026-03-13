@@ -3,9 +3,9 @@
 #include "Message.h"
 
 Player::Player(std::shared_ptr<SDL_Renderer> renderer,
-	const std::string path, int x, int y, bool isTransparent, Broker& broker) :
-	Pawn(renderer, path, x, y, isTransparent, broker),
-	Publisher(&broker) 
+	const std::string path, int x, int y, bool isTransparent) :
+	Pawn(renderer, path, x, y, isTransparent)
+	
 {
 }
 
@@ -14,7 +14,7 @@ void Player::Update() {
 	DeltaMove.x = 0;
 	DeltaMove.y = 0;
 
-	Input::INSTANCE().Update();
+	Input::INSTANCE().UpdateKeyBoard();
 	if (Input::INSTANCE().isKeyHeld(SDL_SCANCODE_UP)) {
 		UpdatePosition(0, -speed);
 	}
@@ -29,7 +29,7 @@ void Player::Update() {
 	}
 	if (Input::INSTANCE().isKeyHeld(SDL_SCANCODE_P)) {
 
-		Publish("Test", new IEventData("<Test message>"));
+		Publish("Test", new Message(*this, "<Test message>"));
 	}
 
 	if (Input::INSTANCE().isKeyHeld(SDL_SCANCODE_SPACE)) {

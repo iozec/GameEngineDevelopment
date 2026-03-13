@@ -1,17 +1,19 @@
 #include "Monster.h"
 #include <iostream>
-
-
+#include "Message.h"
 
 Monster::Monster(std::shared_ptr<SDL_Renderer> renderer,
-	const std::string path, int x, int y, bool isTransparent, Broker& broker) :
-	Subscriber(broker),
-	Pawn(renderer, path, x, y, isTransparent, broker)
+	const std::string path, int x, int y, bool isTransparent) :
+	Pawn(renderer, path, x, y, isTransparent)
 {
 }
 
-void Monster::Receive(const IEventData* message, const std::string& topic)
+void Monster::Receive(const IEventData* EventData, const std::string& topic)
 {
-	std::cout << "Received message: " << message->getMessage()
-		<< ", from topic: " << topic << std::endl;
+	if(topic == "Test")
+	{
+		std::cout << "Received message: " <<
+			static_cast<const Message*>(EventData)->getMessage()
+			<< ", from topic: " << topic << std::endl;
+	}
 }

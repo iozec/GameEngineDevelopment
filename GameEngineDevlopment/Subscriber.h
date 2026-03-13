@@ -1,14 +1,12 @@
 #pragma once
-#include "Broker.h"
-#include "Message.h"
+#include <string>
 
-
+class IEventData;
 
 class Subscriber
 {
-	Broker* broker;
 public:
-	Subscriber(Broker& broker) : broker(&broker) {}
+	Subscriber() {}
 
 	void Subscribe(const std::string& topic);
 

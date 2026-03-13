@@ -2,18 +2,15 @@
 #include <cstdint>
 #include <string>
 
-class Broker;
 class IEventData;
-
-
 class Publisher
 {
-	Broker* broker;
+
 public:
 
-	Publisher(Broker* b) : broker(b) {}
-
-	void Publish(const std::string& topic, IEventData* message) const;
+	//Publisher(Broker* b) : broker(b) {}
+	Publisher() {}
+	void Publish(const std::string& topic, IEventData* EventData) const;
 };
 
 	/*Publisher(Broker& broker) : broker(&broker) {}

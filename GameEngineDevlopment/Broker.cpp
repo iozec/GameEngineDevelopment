@@ -3,9 +3,6 @@
 #include "Message.h"
 
 
-Broker* Broker::_instance = nullptr;
-
-
 void Broker::Subscribe(const std::string& topic, Subscriber* sub) {
     if (sub != nullptr) {
         subscriber[topic].push_back(sub);
@@ -23,3 +20,13 @@ void Broker::Publish(const std::string& topic, IEventData* message) {
         }
     }
 }
+
+
+ Broker& const Broker::INSTANCE()
+{
+    if (!Broker::_instance)
+        Broker::_instance = new Broker();
+
+    return *Broker::_instance;
+}
+Broker* Broker::_instance = nullptr;

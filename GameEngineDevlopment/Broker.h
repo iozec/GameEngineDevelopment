@@ -14,16 +14,13 @@
 		std::unordered_map<std::string, std::queue<IEventData*>> topics;
 		std::unordered_map<std::string, std::vector<Subscriber*>> subscriber;
 
-		static Broker* _instance;
 
 	public:
 
-		static Broker* Instance() {
-			if (_instance == nullptr) {
-				_instance = new Broker();
-			}
-			return _instance;
-		}
+		static Broker* _instance;
+		static Broker& const INSTANCE();
+
+		
 
 		void Subscribe(const std::string& topic, Subscriber* sub);
 		void Publish(const std::string& topic, IEventData* message);

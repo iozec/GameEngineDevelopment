@@ -134,6 +134,8 @@
     <ClCompile Include="Broker.cpp" />
     <ClCompile Include="Debug.cpp" />
     <ClCompile Include="ECS.cpp" />
+    <ClCompile Include="EditorGui.cpp" />
+    <ClCompile Include="IGuiWindow.cpp" />
     <ClCompile Include="imGui\backends\imgui_impl_sdl3.cpp" />
     <ClCompile Include="imGui\backends\imgui_impl_sdlrenderer3.cpp" />
     <ClCompile Include="imGui\imgui.cpp" />
@@ -149,6 +151,7 @@
     <ClCompile Include="IEventData.cpp" />
     <ClCompile Include="Message.cpp" />
     <ClCompile Include="Monster.cpp" />
+    <ClCompile Include="MouseEventData.cpp" />
     <ClCompile Include="MovementSystem.cpp" />
     <ClCompile Include="Pawn.cpp" />
     <ClCompile Include="Player.cpp" />
@@ -167,7 +170,9 @@
     <ClInclude Include="Debug.h" />
     <ClInclude Include="Deleter.h" />
     <ClInclude Include="ECS.h" />
+    <ClInclude Include="EditorGui.h" />
     <ClInclude Include="GameObject.h" />
+    <ClInclude Include="IGuiWindow.h" />
     <ClInclude Include="imGui\backends\imgui_impl_sdl3.h" />
     <ClInclude Include="imGui\backends\imgui_impl_sdlrenderer3.h" />
     <ClInclude Include="imGui\imconfig.h" />
@@ -182,6 +187,7 @@
     <ClInclude Include="IEventData.h" />
     <ClInclude Include="Message.h" />
     <ClInclude Include="Monster.h" />
+    <ClInclude Include="MouseEventData.h" />
     <ClInclude Include="MovementSystem.h" />
     <ClInclude Include="Pawn.h" />
     <ClInclude Include="Player.h" />

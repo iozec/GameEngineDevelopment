@@ -22,6 +22,7 @@
 
 #include "sol/sol.hpp"
 #include "ScriptComponent.h"
+#include "EditorGui.h"
 
 
 
@@ -83,7 +84,7 @@ int main(int argc, char* argv[])
         float RandomX = dist(gen);
         MovementSystem::AddVelocityComponentToEntitiy(i, ecs, RandomX, -30, 1);
     } 
-    Broker* broker = Broker::Instance();
+    
 
     //////////////////////////////LUA INTEGRATION//////////////////////////////////
 
@@ -108,7 +109,7 @@ int main(int argc, char* argv[])
 
     Player player1(rendere,
         "./../Assets/monster.bmp",
-        100, 200, false, *broker);
+        100, 200, false);
 
     // Call enemy.attack(Player.health)
     sol::function attackFunc = enemy["attack"];
@@ -122,10 +123,11 @@ int main(int argc, char* argv[])
     /////////////////////////////////end lua integration/////////////////////////////////
 
     Player player(Rendere,
-        "./../assets/monster.bmp", 100, 200, true, *broker);
+        "./../assets/monster.bmp", 100, 200, true);
         Monster monster(Rendere,
-        "./../assets/monstertrans.bmp", 200, 200, true, *broker);
+        "./../assets/monstertrans.bmp", 200, 200, true);
         GameObject gameObject;
+
 
         gameObject.transform.SetX(400);
         gameObject.transform.SetY(400);
@@ -137,6 +139,15 @@ int main(int argc, char* argv[])
             "./../luaSrc/ComponentTest.lua", &gameObject);
         gameObject.AddComponent(scriptTest);
 
+        monster.Subscribe("MouseButtonUpdate");
+        monster.Subscribe("MousePositionUpdate");
+        monster.Subscribe("MouseWheelUpdate");
+
+        player.Subscribe("MousePositionUpdate");
+        player.Subscribe("MouseWheelUpdate");
+        player.Subscribe("MouseButtonUpdate");
+
+
         monster.Subscribe("Test");
 
     BitmapComponent* temp2 = gameObject.GetComponentByType<BitmapComponent>();
@@ -144,7 +155,6 @@ int main(int argc, char* argv[])
     bool IsRunning = true;
 
     Input in;
-
     VerboseDebugPrintF(Verbosity::Error,
         "UOSGameEngine started with %d arguments\n", argc);
 
@@ -186,21 +196,22 @@ int main(int argc, char* argv[])
 
 
         SDL_Event e;
-        while (SDL_PollEvent(&e)) {
-            
-			ImGui_ImplSDL3_ProcessEvent(&e);
-			switch (e.type) {
+        while (SDL_PollEvent(&e))
+        {
+            Input::INSTANCE().UpdateMouse(e);
+            ImGui_ImplSDL3_ProcessEvent(&e);
+            switch (e.type) {
 
-
-                case SDL_EVENT_QUIT:
+            case SDL_EVENT_QUIT:
                 IsRunning = false;
-				break;
-                default:
-                    break;
+                break;
+
+            default:
+                break;
             }
         }
 
-        Input::INSTANCE().Update();
+        Input::INSTANCE().UpdateKeyBoard();
         /*if (Input::INSTANCE().isKeyHeld(SDL_SCANCODE_UP))
             player.UpdatePosition(0, -1);
         if (Input::INSTANCE().isKeyHeld(SDL_SCANCODE_DOWN))
@@ -231,6 +242,7 @@ int main(int argc, char* argv[])
             ImGui_ImplSDLRenderer3_NewFrame();
             ImGui_ImplSDL3_NewFrame();
             ImGui::NewFrame();
+            EditorGui::INSTANCE().DrawWindows();
 
             // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()!
             // You can browse its code to learn more about Dear ImGui).

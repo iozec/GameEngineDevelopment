@@ -1,4 +1,7 @@
 #include "Input.h"
+#include "MouseEventData.h"
+#include "Publisher.h"
+#include "Broker.h"
 
 Input::Input()
 {
@@ -6,12 +9,49 @@ Input::Input()
         lastFrameKeyState[i] = false;
 
 }
-void Input::Update()
+void Input::UpdateKeyBoard()
 {
    
     currentKeyStates = SDL_GetKeyboardState(NULL);
 
 }
+
+void Input::UpdateMouse(const SDL_Event& event)
+{
+    MouseEventData* mouseEventData = nullptr;
+
+    switch (event.type) {
+
+    case SDL_EVENT_MOUSE_MOTION:
+        mousePositon = event.motion;
+        mouseEventData =
+            new MouseEventData(*this, mouseButton, mousePositon, mouseWheel);
+        Publish("MousePositionUpdate", mouseEventData);
+        break;
+
+    case SDL_EVENT_MOUSE_WHEEL:
+        mouseWheel = event.wheel;
+        mouseEventData =
+            new MouseEventData(*this, mouseButton, mousePositon, mouseWheel);
+        Publish("MouseWheelUpdate", mouseEventData);
+        break;
+
+    case SDL_EVENT_MOUSE_BUTTON_DOWN:
+    case SDL_EVENT_MOUSE_BUTTON_UP:
+        mouseButton = event.button;
+        mouseEventData =
+            new MouseEventData(*this, mouseButton, mousePositon, mouseWheel);
+        Publish("MouseButtonUpdate", mouseEventData);
+        break;
+
+    default:
+        break;
+    }
+
+    delete mouseEventData;
+    mouseEventData = nullptr;
+}
+
 
 bool Input::isKeyDown(SDL_Scancode scanCode)
 {

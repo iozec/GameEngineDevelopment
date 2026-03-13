@@ -2,13 +2,11 @@
 #include "Pawn.h"
 #include "Publisher.h"
 #include <iostream>
+#include "Subscriber.h"
 
 class Broker;
 
-class Player :
-
-	public Pawn,
-	public Publisher
+class Player : public Pawn//, public Publisher
 {
 public:
 
@@ -19,7 +17,7 @@ public:
 	}
 
 	Player(std::shared_ptr<SDL_Renderer> renderer,
-		const std::string path, int x, int y, bool isTransparent, Broker& broker);
+		const std::string path, int x, int y, bool isTransparent);
 	
 	void Update() override;
 
