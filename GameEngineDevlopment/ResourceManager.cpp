@@ -71,6 +71,11 @@ ResourceManager& ResourceManager::INSTANCE()
 
 }
 
+std::shared_ptr<SDL_Texture> ResourceManager::LoadSVGTexture(const char* filename, int width, int height)
+{
+	return std::shared_ptr<SDL_Texture>();
+}
+
 ResourceManager::~ResourceManager()
 {
 	_instance = nullptr;

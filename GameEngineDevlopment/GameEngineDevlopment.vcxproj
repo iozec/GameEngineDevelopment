@@ -129,12 +129,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AssetWindow.cpp" />
     <ClCompile Include="Bitmap.cpp" />
     <ClCompile Include="BitmapComponent.cpp" />
     <ClCompile Include="Broker.cpp" />
     <ClCompile Include="Debug.cpp" />
     <ClCompile Include="ECS.cpp" />
     <ClCompile Include="EditorGui.cpp" />
+    <ClCompile Include="IDerectoryItem.cpp" />
     <ClCompile Include="IGuiWindow.cpp" />
     <ClCompile Include="imGui\backends\imgui_impl_sdl3.cpp" />
     <ClCompile Include="imGui\backends\imgui_impl_sdlrenderer3.cpp" />
@@ -163,6 +165,7 @@
     <ClCompile Include="Subscriber.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AssetWindow.h" />
     <ClInclude Include="Bitmap.h" />
     <ClInclude Include="BitmapComponent.h" />
     <ClInclude Include="Broker.h" />
@@ -172,6 +175,7 @@
     <ClInclude Include="ECS.h" />
     <ClInclude Include="EditorGui.h" />
     <ClInclude Include="GameObject.h" />
+    <ClInclude Include="IDerectoryItem.h" />
     <ClInclude Include="IGuiWindow.h" />
     <ClInclude Include="imGui\backends\imgui_impl_sdl3.h" />
     <ClInclude Include="imGui\backends\imgui_impl_sdlrenderer3.h" />

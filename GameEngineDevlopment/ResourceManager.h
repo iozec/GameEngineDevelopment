@@ -14,6 +14,7 @@ public:
 	//std::shared_ptr<SDL_Renderer> renderer;
 	static ResourceManager* _instance;
 	static ResourceManager& INSTANCE();
+	std::shared_ptr<SDL_Texture> LoadSVGTexture(const char* filename, int width, int height);
 
 	~ResourceManager();
 
