@@ -15,6 +15,8 @@ Bitmap::Bitmap(std::shared_ptr<SDL_Renderer> renderer,
 	SDL_GetTextureSize(_texture.get(), &w, &h);
 	_width = w;
 	_height = h;
+
+	this->path = path;
 }
 
 SDL_Rect Bitmap::GetImageBounds() const

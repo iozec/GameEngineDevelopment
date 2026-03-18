@@ -1,5 +1,13 @@
 #include "ScriptComponent.h"
-#include "pawn.h"
+#include "pawn.h" 
+
+
+ScriptComponent::ScriptComponent(GameObject* ParentObject) 
+        :I_ComponentBase(ParentObject)
+    {
+    
+    }
+
 void ScriptComponent::LoadScript()
 {
     try
@@ -41,6 +49,27 @@ void ScriptComponent::LoadScript()
         {
             std::cerr << "[c++] lua error " << e.what() << std::endl;
         }
+    }
+
+   
+
+    nlohmann::json ScriptComponent::Save() const
+    {
+        nlohmann::json ScriptSaveData;
+
+        ScriptSaveData[Type()] = {
+            { "scriptPath", ScriptPath },
+            { "type",       Type() }
+        };
+
+        return ScriptSaveData;
+    }
+
+    void ScriptComponent::Load(nlohmann::json LoadData, std::shared_ptr<SDL_Renderer> renderer)
+    {
+        ScriptPath = LoadData["scriptPath"].get<std::string>();
+        lua.open_libraries(sol::lib::base, sol::lib::os, sol::lib::math);
+        LoadScript();
     }
 
     void ScriptComponent::reloadIfChanged()

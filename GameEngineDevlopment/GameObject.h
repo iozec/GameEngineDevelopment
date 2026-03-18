@@ -2,12 +2,13 @@
 #include "Transform.hpp"
 #include <vector>
 #include "I_ComponentBase.h"
+#include "Publisher.h"
 #include <memory>
 #include <algorithm>
 
 template<typename T>
 concept componentType = std::is_same_v< T, I_ComponentBase >;
-class GameObject
+class GameObject : public Publisher, public ISaveLoadable
 {
 
 public:
@@ -20,6 +21,12 @@ public:
 
 	void AddComponent(std::shared_ptr<I_ComponentBase> component);
 	void RemoveComponent(std::shared_ptr<I_ComponentBase> component);
+
+	//Inherited via ISaveLoadable
+	nlohmann::json Save() const override;
+
+	void Load(nlohmann::json LoadData,
+		std::shared_ptr<SDL_Renderer>) override;
 	
 	template<typename componentType>
 	componentType* GetComponentByType()

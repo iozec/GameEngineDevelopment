@@ -4,6 +4,7 @@
 #include <iostream>
 #include "imgui.h"
 #include "EditorGui.h"
+#include "Hierarchy.h"
 
 int Pawn::CurrentID = 0;
 
@@ -22,7 +23,6 @@ Pawn::Pawn(std::shared_ptr<SDL_Renderer> renderer,
 
 void Pawn::Receive(const IEventData* EventData, const std::string& topic)
 {
-	//Pawn::Receive(EventData, topic);
 	const MouseEventData* mouseEventData = static_cast<const MouseEventData*>(EventData);
 
 	if (topic == "MousePositionUpdate")
@@ -55,6 +55,7 @@ void Pawn::Receive(const IEventData* EventData, const std::string& topic)
 		}
 	}
 
+	
 }
 
 void Pawn::SetDeltaMove(int x, int y)

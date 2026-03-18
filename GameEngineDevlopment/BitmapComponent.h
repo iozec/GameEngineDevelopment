@@ -14,6 +14,14 @@ public:
 	
 	~BitmapComponent() override {};
 	void Update() override;
+
+	//inherited via ISaveLoadable via I_ComponentBase
+	nlohmann::json Save() const override;
+	void Load(nlohmann::json LoadData,
+		std::shared_ptr<SDL_Renderer> renderer) override;
+	std::string Type() const override { return "BitmapComponent"; }
+
+	BitmapComponent(GameObject* parentObject);
 };
 
 

@@ -6,3 +6,4 @@ void Publisher::Publish(const std::string& topic, IEventData* EventData) const
 {
     Broker::INSTANCE().Publish(topic, EventData);
 }
+

@@ -5,6 +5,7 @@
 #include <imgui.h>
 #include "ResourceManager.h"
 #include "SDL3_image/SDL_image.h"
+#include "EditorGui.h"
 
 AssetWindow::AssetWindow(const std::shared_ptr<SDL_Renderer>& pRenderer)
 {
@@ -62,7 +63,7 @@ AssetWindow::AssetWindow(const std::shared_ptr<SDL_Renderer>& pRenderer)
             //////////////////////////////// For Dragging
             if (ImGui::BeginDragDropSource())
             {
-                //AssetMouseDrag = content[i];
+                EditorGui::INSTANCE().AssetMouseDrag = content[i];
                 ImGui::Image((ImTextureID)content[i]->GetTextureRef().get(), { 100,100 });
                 ImGui::EndDragDropSource();
             }
@@ -77,10 +78,6 @@ AssetWindow::AssetWindow(const std::shared_ptr<SDL_Renderer>& pRenderer)
         ImGui::EndChild();
 
         ImGui::End();
-
- 
-        Bitmap* AssetMouseDrag = nullptr;
-
 
 }
 

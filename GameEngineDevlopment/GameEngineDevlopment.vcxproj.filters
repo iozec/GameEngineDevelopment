@@ -123,6 +123,15 @@
     <ClCompile Include="IDerectoryItem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Hierarchy.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SaveLoadSystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ISaveLoadable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Bitmap.h">
@@ -234,6 +243,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="IDerectoryItem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Hierarchy.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SaveLoadSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ISaveLoadable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

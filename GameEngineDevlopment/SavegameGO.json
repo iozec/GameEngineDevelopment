@@ -1,0 +1,25 @@
+{
+    "Components": [
+        {
+            "BitmapComponent": {
+                "height": 114,
+                "isTransparent": true,
+                "path": "./../Assets/monstertrans.bmp",
+                "type": "BitmapComponent",
+                "width": 81,
+                "x": 300,
+                "y": 200
+            }
+        },
+        {
+            "ScriptComponent": {
+                "scriptPath": "./../luaSrc/ComponentTest.lua",
+                "type": "ScriptComponent"
+            }
+        }
+    ],
+    "Transform": {
+        "LocationX": 353,
+        "LocationY": 400
+    }
+}

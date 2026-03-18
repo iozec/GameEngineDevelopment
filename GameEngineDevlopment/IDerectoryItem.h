@@ -16,6 +16,9 @@ public:
         std::filesystem::directory_entry entery);
     ~IDirectoryItem() = default;
     void OnClick();
+  
+    //////for Dragging
+
     bool DrawIconButton();
 
     std::shared_ptr<SDL_Texture> GetTextureRef();

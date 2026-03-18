@@ -5,7 +5,7 @@
 #include "imGui.h"
 #include "imGUI/backends/imgui_impl_sdl3.h"
 #include "imGUI/backends/imgui_impl_sdlrenderer3.h"
-#include <iostream>
+#include "json.hpp"
 #include "SDL3/SDL.h"
 #include "Bitmap.h"
 #include "Monster.h"
@@ -17,15 +17,63 @@
 #include "ECS.h"
 #include "RendererSystem.h"
 #include "MovementSystem.h"
-#include <random>
 #include "StackArenaAllocator.h"
+#include <random>
+#include <iostream>
+#include <fstream>
 
 #include "sol/sol.hpp"
 #include "ScriptComponent.h"
 #include "EditorGui.h"
+#include "Hierarchy.h"
+#include "SaveLoadSystem.h"
 
-
-
+//void SavePlayerToJson(const Pawn& Player)
+//{
+//    nlohmann::json SaveData;
+//
+//    SaveData["Player"] = {
+//        {"x", Player.GetX()},
+//        {"y", Player.GetY()},
+//
+//    };
+//
+//    ////Write to file
+//    std::ofstream file("savegame.json");
+//    file << SaveData.dump(4); // Pretty print with 4 spaces
+//    file.close();
+//
+//    std::cout << "Saved to savegame.json\n";
+//
+//};
+//int LoadPlayerFromFjson(Pawn& Player)
+//{
+//    std::ifstream file("savegame.json");
+//    if (!file.is_open())
+//    {
+//        std::cerr << "Failed to open savegame.json\n";
+//        return -1;
+//    }
+//
+//	nlohmann::json LoadData;
+//
+//    file >> LoadData;
+//    file.close();
+//
+//    if(LoadData.contains("Player"))
+//    {
+//        Player.SetX(LoadData["Player"]["x"]);
+//        Player.SetY(LoadData["Player"]["y"]);
+//        std::cout << "Loaded from savegame.json\n";
+//        return 0;
+//    }
+//    else
+//    {
+//        std::cerr << "invalid save data\n";
+//        return -1;
+//	}
+//
+//}
 
 int main(int argc, char* argv[])
 {
@@ -51,7 +99,7 @@ int main(int argc, char* argv[])
     std::cout << "Resetting stack...\n";
     stack.reset();
 
-
+    ///////Renderer Setup////////
     if (!SDL_Init(SDL_INIT_AUDIO | SDL_INIT_VIDEO | SDL_INIT_EVENTS)) {
         printf("error initializing SDL: %s\n", SDL_GetError());
     }
@@ -63,6 +111,8 @@ int main(int argc, char* argv[])
     SDL_Color backgroundColor = { 0, 100, 200, 255 };
     SDL_SetRenderDrawColor(rendere.get(), 0, 100, 200, 0);
     std::shared_ptr<SDL_Renderer> Rendere = std::shared_ptr<SDL_Renderer>(rendere);
+
+	Hierarchy::INSTANCE().Init(Rendere);
 
     //Sprites
       //RendererSystem::AddBitmapComponentToEntity(0, ecs,
@@ -205,6 +255,12 @@ int main(int argc, char* argv[])
             case SDL_EVENT_QUIT:
                 IsRunning = false;
                 break;
+            case SDL_EVENT_KEY_DOWN:
+                if(e.key.scancode == SDL_SCANCODE_0)
+					SaveLoadSystem::INSTANCE().SaveGame("SavegameGO.json", gameObject);
+				else if (e.key.scancode == SDL_SCANCODE_P)
+                    SaveLoadSystem::INSTANCE().LoadGame("SavegameGO.json", gameObject, rendere);
+				break;
 
             default:
                 break;
@@ -272,8 +328,10 @@ int main(int argc, char* argv[])
                 player.Grounded = false;
             else if (player.DeltaMove.y >= 0)
                 player.Grounded = (player.Position.y < oldY + player.DeltaMove.y);   // hit ground
-            player.Draw();
+            
+			Hierarchy::INSTANCE().DrawHierarchyItems();
 
+            player.Draw();
             monster.Draw();
             //monster.DrawCollider(monster.GetCollisionBounds());
             // 
