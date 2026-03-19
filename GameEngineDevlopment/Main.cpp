@@ -1,8 +1,9 @@
 // GameEngineDevlopment.cpp : This file contains the 'main' function. Program execution begins and ends there.
 //
 
-
-#include "imGui.h"
+#define IMGUI_DEFINE_MATH_OPERATORS
+#include "imgui.h"
+#include "imgui_internal.h"
 #include "imGUI/backends/imgui_impl_sdl3.h"
 #include "imGUI/backends/imgui_impl_sdlrenderer3.h"
 #include "json.hpp"
@@ -27,6 +28,8 @@
 #include "EditorGui.h"
 #include "Hierarchy.h"
 #include "SaveLoadSystem.h"
+#include "ProfilerSystem.h"
+//#include <imgui_widgets.cpp>
 
 //void SavePlayerToJson(const Pawn& Player)
 //{
@@ -74,6 +77,156 @@
 //	}
 //
 //}
+
+void DrawProfileData(ImGuiIO& io)
+{
+    ImGui::Begin("Profiler");
+
+    static int selectedFrame = -1;
+    static FrameMap* Snapshot;
+    static std::vector<float>* FrameTimes;
+
+    // take snapshot of all current frame data.
+    if (ImGui::Button("take snapshot"))
+    {
+        Snapshot = &(ProfilerSystem::Instance().GetFrameData());
+        FrameTimes = &(ProfilerSystem::Instance().GetFrameTimes());
+    }
+
+    ImGui::SameLine();
+    static bool LiveFlameGraph = true;
+    ImGui::Checkbox("Live Flame Graph", &LiveFlameGraph);
+    if (LiveFlameGraph)
+    {
+        selectedFrame = -1;
+    }
+    static int range[2] = { 0, 100 };
+
+    if (FrameTimes && FrameTimes->size() > 100)
+    {
+        ImGui::SliderInt2("Frame Range", range, 0, FrameTimes->size());
+
+        if (range[0] == range[1])
+            range[0] = range[1] - 1;
+
+        std::vector<float> subData(
+            FrameTimes->cbegin() + range[0],
+            FrameTimes->cbegin() + range[1]
+        );
+
+        int tempHistSelection = ImGui::MyPlotHistogram(
+            "Frame data",
+            subData.data(),
+            subData.size()
+        );
+
+        if (tempHistSelection != -1)
+        {
+            LiveFlameGraph = false;
+            selectedFrame = tempHistSelection;
+        }
+    }
+
+    FrameMap previousFrame = ProfilerSystem::Instance().GetLastFrameData();
+
+    if (!LiveFlameGraph && selectedFrame != -1)
+    {
+        previousFrame.clear();
+
+        for (auto& [SampleName, samples] : *Snapshot)
+        {
+            
+            previousFrame[SampleName].push_back(samples[range[0] + selectedFrame]);
+        }
+    }
+    else
+    {
+        LiveFlameGraph = true;
+    }
+
+    ImDrawList* drawList = ImGui::GetCurrentWindow()->DrawList;
+
+    ImVec2 canvas_p0 = ImGui::GetCursorScreenPos();      // pos of screen top left
+    ImVec2 canvas_sz = ImGui::GetContentRegionAvail();   // Resize canvas 
+
+    if (canvas_sz.x < 50.0f) canvas_sz.x = 50.0f;
+    if (canvas_sz.y < 50.0f) canvas_sz.y = 50.0f;
+
+    ImVec2 canvas_p1 = ImVec2(canvas_p0.x + canvas_sz.x,
+        canvas_p0.y + canvas_sz.y);
+
+    drawList->PushClipRect(canvas_p0, canvas_p1, true);
+
+    uint64_t totalFrameTime = 0;
+    std::vector<uint64_t> SampleTimes;
+    std::vector<float> SampleWidths;
+    std::vector<std::string> SampleNames;
+
+    for (auto const& [SampleName, samples] : previousFrame)
+    {
+        totalFrameTime += samples[0].frameTime + 1;
+        SampleTimes.push_back((uint64_t)samples[0].frameTime + 1);
+        SampleNames.push_back(SampleName);
+    }
+
+    float MinBlockWidth = canvas_sz.x / totalFrameTime;   // GraphWindowWidth / totalFrameTime
+
+    for (int i = 0; i < SampleTimes.size(); i++)
+    {
+        SampleWidths.push_back(SampleTimes[i] * MinBlockWidth);
+    }
+
+    ImGui::LabelText("Total Frame Time", std::to_string(totalFrameTime).c_str());
+    ImGui::LabelText("Window Width / total frame time", std::to_string(MinBlockWidth).c_str());
+
+    float TotalBlockWidthSoFar = 0;
+    int sampleCount = previousFrame.size();
+
+    const ImU32 col_outline_base = ImGui::GetColorU32(ImGuiCol_PlotHistogram) & 0x7FFFFFFF;
+    const ImU32 col_base = ImGui::GetColorU32(ImGuiCol_PlotHistogram) & 0x7FFFFFFF;
+
+    for (int i = 0; i < sampleCount; i++)
+    {
+        float ThisBlockWidth = SampleWidths[i];
+
+      
+        ImVec2 minPos(
+            canvas_p0.x + TotalBlockWidthSoFar,
+            canvas_p0.y + 100
+        );
+
+      
+        ImVec2 maxPos(
+            canvas_p0.x + TotalBlockWidthSoFar + ThisBlockWidth,
+            canvas_p0.y + 200
+        );
+
+       
+        drawList->AddRectFilled(
+            minPos,
+            maxPos,
+            col_base,
+            GImGui->Style.FrameRounding
+        );
+
+      
+        drawList->AddRect(minPos, maxPos, col_outline_base);
+
+        
+        ImGui::RenderText(ImVec2(minPos.x + 10, minPos.y + 10),SampleNames[i].c_str()
+        );
+
+      
+        ImGui::RenderText(ImVec2(minPos.x + 10, minPos.y + 25),std::to_string(SampleTimes[i] - 1).c_str()
+        );
+
+        TotalBlockWidthSoFar += ThisBlockWidth;
+    }
+
+    drawList->PopClipRect();
+
+    ImGui::End();
+}
 
 int main(int argc, char* argv[])
 {
@@ -243,7 +396,7 @@ int main(int argc, char* argv[])
 
     while (IsRunning)
     {
-
+        ProfilerSystem::Instance().StartFrame();
 
         SDL_Event e;
         while (SDL_PollEvent(&e))
@@ -298,6 +451,9 @@ int main(int argc, char* argv[])
             ImGui_ImplSDLRenderer3_NewFrame();
             ImGui_ImplSDL3_NewFrame();
             ImGui::NewFrame();
+
+            DrawProfileData(io);
+
             EditorGui::INSTANCE().DrawWindows();
 
             // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()!
@@ -330,9 +486,11 @@ int main(int argc, char* argv[])
                 player.Grounded = (player.Position.y < oldY + player.DeltaMove.y);   // hit ground
             
 			Hierarchy::INSTANCE().DrawHierarchyItems();
-
-            player.Draw();
-            monster.Draw();
+            {
+                PROFILE("PlayerRender");
+                player.Draw();
+                monster.Draw();
+            }
             //monster.DrawCollider(monster.GetCollisionBounds());
             // 
             // Rendering
@@ -349,13 +507,16 @@ int main(int argc, char* argv[])
 
             Input::INSTANCE().LateUpdate();
 
+            
             SDL_Delay(16);
             //void Update();
         
 
-    }
+            ProfilerSystem::Instance().EndFrame();
+    } // end of main loop
+    ProfilerSystem::Instance().WriteDataToCSV();
 
-
+    
 
 
 

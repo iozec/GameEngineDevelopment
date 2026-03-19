@@ -159,6 +159,7 @@
     <ClCompile Include="MovementSystem.cpp" />
     <ClCompile Include="Pawn.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="ProfilerSystem.cpp" />
     <ClCompile Include="Publisher.cpp" />
     <ClCompile Include="RendererSystem.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
@@ -200,6 +201,7 @@
     <ClInclude Include="MovementSystem.h" />
     <ClInclude Include="Pawn.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="ProfilerSystem.h" />
     <ClInclude Include="Publisher.h" />
     <ClInclude Include="RendererSystem.h" />
     <ClInclude Include="ResourceManager.h" />
