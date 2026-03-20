@@ -1,6 +1,8 @@
 #include "Hierarchy.h"
 
+
 Hierarchy* Hierarchy::_instance = nullptr;
+
 Hierarchy& const Hierarchy::INSTANCE()
 {
     if (!Hierarchy::_instance)
@@ -22,4 +24,87 @@ void Hierarchy::DrawHierarchyItems()
     {
         HierarchyList[i]->Draw();
     }
+}
+
+void Hierarchy::DrawPawnNode(Pawn* pawn, ImGuiTreeNodeFlags nodeFlags)
+{
+    // Tree node for this pawn
+    bool isNodeOpen = ImGui::TreeNodeEx(
+        std::to_string(pawn->ID).c_str(),
+        nodeFlags,
+        "%d",
+        pawn->ID
+    );
+
+    // Click selection
+    if (ImGui::IsItemClicked())
+    {
+        std::cout << "selected object is " << pawn->ID << std::endl;
+    }
+
+    // Drag source
+    if (ImGui::BeginDragDropSource())
+    {
+        ImGui::SetDragDropPayload("TREENODE", pawn, sizeof(Pawn));
+        ImGui::Text("This is a drag and drop source");
+        ImGui::EndDragDropSource();
+    }
+
+
+    if (isNodeOpen)
+    {
+        for (int i = 0; i < 5; ++i)
+        {
+            std::string itemName = "Child " + std::to_string(i);
+            if (ImGui::TreeNodeEx(
+                itemName.c_str(),
+                nodeFlags,
+                "%s",
+                itemName.c_str()))
+            {
+                ImGui::TreePop();
+            }
+        }
+
+        ImGui::TreePop();
+    }
+}
+
+void Hierarchy::AddPawn(Pawn* pawn)
+{
+    HierarchyList.push_back(pawn);
+}
+
+void Hierarchy::Draw()
+{
+    ImGui::Begin("Hierarchy");
+
+
+    ImGuiTreeNodeFlags nodeFlags =
+        ImGuiTreeNodeFlags_FramePadding |
+        ImGuiTreeNodeFlags_DefaultOpen;
+
+
+    const std::vector<Pawn*>& hierarchy = Hierarchy::INSTANCE().GetHierarchyList();
+
+
+    for (Pawn* pawn : hierarchy)
+    {
+        DrawPawnNode(pawn, nodeFlags);
+    }
+
+
+    if (ImGui::BeginDragDropTarget())
+    {
+        if (const ImGuiPayload* payload =
+            ImGui::AcceptDragDropPayload("TREENODE"))
+        {
+            IM_ASSERT(payload->DataSize == sizeof(Pawn));
+            Pawn* payloadAsPawn = static_cast<Pawn*>(payload->Data);
+            std::cout << payloadAsPawn->ID << " on top of Root" << std::endl;
+        }
+        ImGui::EndDragDropTarget();
+    }
+
+    ImGui::End();
 }

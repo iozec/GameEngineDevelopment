@@ -29,6 +29,8 @@
 #include "Hierarchy.h"
 #include "SaveLoadSystem.h"
 #include "ProfilerSystem.h"
+#include "Platform.h"
+#include "AssetWindow.h"
 //#include <imgui_widgets.cpp>
 
 //void SavePlayerToJson(const Pawn& Player)
@@ -325,12 +327,14 @@ int main(int argc, char* argv[])
 
     /////////////////////////////////end lua integration/////////////////////////////////
 
-    Player player(Rendere,
+        Player player(Rendere,
         "./../assets/monster.bmp", 100, 200, true);
         Monster monster(Rendere,
         "./../assets/monstertrans.bmp", 200, 200, true);
-        GameObject gameObject;
+        Platform platform(Rendere,
+            "./../assets/Platform.png", 200, 700, true);
 
+        GameObject gameObject;
 
         gameObject.transform.SetX(400);
         gameObject.transform.SetY(400);
@@ -350,6 +354,8 @@ int main(int argc, char* argv[])
         player.Subscribe("MouseWheelUpdate");
         player.Subscribe("MouseButtonUpdate");
 
+        Hierarchy::INSTANCE().AddPawn(&player);
+        Hierarchy::INSTANCE().AddPawn(&monster);
 
         monster.Subscribe("Test");
 
@@ -389,6 +395,8 @@ int main(int argc, char* argv[])
     // Setup Platform/Renderer backends
     ImGui_ImplSDL3_InitForSDLRenderer(win, rendere.get());
     ImGui_ImplSDLRenderer3_Init(rendere.get());
+
+    AssetWindow* assetWindow = new AssetWindow(rendere);
 
     //////////////////////
     // ImGUI
@@ -455,6 +463,10 @@ int main(int argc, char* argv[])
             DrawProfileData(io);
 
             EditorGui::INSTANCE().DrawWindows();
+            Hierarchy::INSTANCE().Draw();
+            assetWindow->DrawWindow();
+
+
 
             // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()!
             // You can browse its code to learn more about Dear ImGui).
@@ -475,21 +487,28 @@ int main(int argc, char* argv[])
             
             //player.DrawCollider(player.GetCollisionBounds());
             player.Update();
+            monster.Update();
 
             int oldY = player.Position.y;
 
             player.IsOverlapping(monster, player.DeltaMove);
+            player.IsOverlapping(platform, player.DeltaMove);
+
 
             if (player.Position.y == oldY + player.DeltaMove.y && player.DeltaMove.y > 0)
                 player.Grounded = false;
             else if (player.DeltaMove.y >= 0)
-                player.Grounded = (player.Position.y < oldY + player.DeltaMove.y);   // hit ground
+                player.Grounded = (player.Position.y < oldY + player.DeltaMove.y); 
+            
+           
+
             
 			Hierarchy::INSTANCE().DrawHierarchyItems();
             {
                 PROFILE("PlayerRender");
                 player.Draw();
                 monster.Draw();
+                platform.Draw();
             }
             //monster.DrawCollider(monster.GetCollisionBounds());
             // 

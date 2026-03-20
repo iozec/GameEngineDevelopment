@@ -1,4 +1,5 @@
 #include "RendererSystem.h"
+#include <iostream>
 
 BitmapECS RendererSystem::AddBitmapComponentToEntity(uint32_t EntityID,
 	ECS& ecs, std::string FileLocation, std::shared_ptr<SDL_Renderer> renderer,
@@ -19,6 +20,8 @@ void RendererSystem::Render(ECS& ecs,
 	{
 		if (ecs.entityIDs[entityID] & (BitmapKey | PositionKey))
 		{
+
+
 			float width, height;
 			SDL_GetTextureSize(
 				ecs.bitmaps[entityID].texture.get(), &width, &height);
@@ -29,6 +32,9 @@ void RendererSystem::Render(ECS& ecs,
 			//render texture
 			SDL_RenderTexture(renderer.get(), ecs.bitmaps[entityID].texture.get(),
 				NULL, &dstRect);
+
+
+
 		}
 	}
 }

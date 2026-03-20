@@ -16,7 +16,7 @@ AssetWindow::AssetWindow(const std::shared_ptr<SDL_Renderer>& pRenderer)
     BackButtontexture = ResourceManager::INSTANCE().LoadTexture(
         "./../Assets/SVG/left-arrow-svgrepo-com.png", true, pRenderer);
 
-    std::string path = "../../Assets";
+    std::string path = "./../Assets";
     std::filesystem::path dirPath(path);
     dirStack.push(dirPath);
 
@@ -42,7 +42,7 @@ AssetWindow::AssetWindow(const std::shared_ptr<SDL_Renderer>& pRenderer)
         }
 
         ImGui::BeginChild("Content Window", ImVec2(), true);
-        ImGui::BeginTable("Content browser", 3);
+      //  ImGui::BeginTable("Content browser", 3);
 
         for (int i = 0; i < content.size(); i++)
         {
@@ -54,6 +54,7 @@ AssetWindow::AssetWindow(const std::shared_ptr<SDL_Renderer>& pRenderer)
                 if (content[i]->GetDirectoryEntry().is_directory())
                 {
                     dirStack.push(content[i]->GetDirectoryEntry().path());
+                    GetItemsInDirectory();
                 }
                 else
                 {
@@ -73,7 +74,7 @@ AssetWindow::AssetWindow(const std::shared_ptr<SDL_Renderer>& pRenderer)
             ImGui::SameLine();
         }
 
-        ImGui::EndTabItem();
+     //   ImGui::EndTable();
 
         ImGui::EndChild();
 
@@ -107,7 +108,7 @@ AssetWindow::AssetWindow(const std::shared_ptr<SDL_Renderer>& pRenderer)
             else if (entry.is_directory())
             {
                 IDirectoryItem* Dir = new IDirectoryItem(
-                    ResourceManager::INSTANCE().LoadSVGTexture("./Assets/SVG/FOLDER.svg", 64, 64),
+                    ResourceManager::INSTANCE().LoadSVGTexture("./Assets/SVG/FOLDER.png", 64, 64),
                     entry);
                 content.push_back(Dir);
                 std::cout << "dir << " << entry << std::endl;
@@ -115,7 +116,7 @@ AssetWindow::AssetWindow(const std::shared_ptr<SDL_Renderer>& pRenderer)
             else
             {
                 IDirectoryItem* File = new IDirectoryItem(
-                    ResourceManager::INSTANCE().LoadSVGTexture("./Assets/SVG/EMPTY BLANK.svg", 64, 64),
+                    ResourceManager::INSTANCE().LoadSVGTexture("./Assets/SVG/EMPTY BLANK.png", 64, 64),
                     entry);
                 content.push_back(File);
             }

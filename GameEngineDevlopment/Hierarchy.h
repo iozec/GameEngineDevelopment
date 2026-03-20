@@ -1,7 +1,11 @@
 #pragma once
+#include "imgui.h"
 #include <memory>
 #include <string>
 #include <vector>
+#include <imgui.h>
+#include <iostream>
+
 
 #include "Pawn.h"
 
@@ -17,6 +21,11 @@
             renderer = rendererPtr;
         }
 
+        const std::vector<Pawn*>& GetHierarchyList() const 
+        { 
+            return HierarchyList; 
+        }
+
         Hierarchy()
         {
         };
@@ -28,5 +37,12 @@
 
         Pawn* AddGameObject(const std::string path, int x, int y, bool isTransparent);
 
+        void Draw();
+
         void DrawHierarchyItems();
+
+        void DrawPawnNode(Pawn* pawn, ImGuiTreeNodeFlags nodeFlags);
+
+        void AddPawn(Pawn* pawn);
+
     };

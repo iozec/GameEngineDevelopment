@@ -2,7 +2,6 @@
 #include <vector>
 struct Transform
 {
-
 	std::vector<Transform*> Children; // Child transforms for heirarchical relationships
 	SDL_Point Location; // Position of object in the local space to its parent
 	SDL_Point WorldLocation; //Position of object in the game world
