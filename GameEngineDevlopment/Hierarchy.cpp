@@ -1,7 +1,13 @@
 #include "Hierarchy.h"
+#include "EditorGui.h"
 
 
 Hierarchy* Hierarchy::_instance = nullptr;
+
+const std::vector<Pawn*>& Hierarchy::GetHierarchyList() const
+{
+       return HierarchyList;
+}
 
 Hierarchy& const Hierarchy::INSTANCE()
 {
@@ -93,16 +99,32 @@ void Hierarchy::Draw()
         DrawPawnNode(pawn, nodeFlags);
     }
 
-
+    // Mouse check hover
     if (ImGui::BeginDragDropTarget())
     {
-        if (const ImGuiPayload* payload =
-            ImGui::AcceptDragDropPayload("TREENODE"))
+        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("TREENODE"))
         {
             IM_ASSERT(payload->DataSize == sizeof(Pawn));
             Pawn* payloadAsPawn = static_cast<Pawn*>(payload->Data);
             std::cout << payloadAsPawn->ID << " on top of Root" << std::endl;
         }
+
+        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
+        {
+            auto droppedItem = EditorGui::INSTANCE().AssetMouseDrag;
+
+            if (droppedItem)
+            {
+                std::string path = droppedItem->GetDirectoryEntry().path().string();
+
+                AddGameObject(path, 0, 0, true);
+
+                std::cout << "Added new Pawn to Hierarchy from path: " << path << std::endl;
+            }
+        }
+
+
+
         ImGui::EndDragDropTarget();
     }
 

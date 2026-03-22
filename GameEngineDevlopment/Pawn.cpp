@@ -8,17 +8,16 @@
 
 int Pawn::CurrentID = 0;
 
-Pawn::Pawn(std::shared_ptr<SDL_Renderer> renderer,
-	const std::string path, int x, int y, bool isTransparent ) {
+Pawn::Pawn(std::shared_ptr<SDL_Renderer> renderer, const std::string path, int x, int y, bool isTransparent) {
+	Sprite = std::make_unique<Bitmap>(renderer, path, x, y, isTransparent);
 
+	filePath = path;
 
-	Sprite = std::unique_ptr<Bitmap>(
-		new Bitmap(renderer, path, x, y, isTransparent));
-
-	Position.x = x;
-	Position.y = y;
-
+	Position = { x, y };
 	ID = CurrentID++;
+
+	Broker::INSTANCE().Subscribe("MouseButtonUpdate", this);
+	Broker::INSTANCE().Subscribe("MousePositionUpdate", this);
 }
 
 void Pawn::Receive(const IEventData* EventData, const std::string& topic)
@@ -27,7 +26,11 @@ void Pawn::Receive(const IEventData* EventData, const std::string& topic)
 
 	if (topic == "MousePositionUpdate")
 	{
-
+		if (isDragging) // We only move if the left button was pressed over us
+		{
+			Position.x = mouseEventData->mousePositon.x - dragOffset.x;
+			Position.y = mouseEventData->mousePositon.y - dragOffset.y;
+		}
 	}
 
 	if (topic == "MouseWheelUpdate")
@@ -45,50 +48,52 @@ void Pawn::Receive(const IEventData* EventData, const std::string& topic)
 		SDL_Rect ImageBounds = GetCollisionBounds();
 
 		if (mouseEventData->mouseButton.button == SDL_BUTTON_LEFT &&
-			mouseEventData->mouseButton.clicks == 1 &&
 			SDL_PointInRect(&mousePosition, &ImageBounds) &&
 			mouseEventData->mouseButton.type == SDL_EVENT_MOUSE_BUTTON_DOWN)
 		{
+			isDragging = true;
+
+			// Calculate where inside the sprite we clicked
+			dragOffset.x = mousePosition.x - Position.x;
+			dragOffset.y = mousePosition.y - Position.y;
+
 			std::cout << "< clicked on image" << std::endl;
 			EditorGui::INSTANCE().AttachChildWindow(this);
+		}
 
+		// 3. Stop Dragging (Button Up)
+		if (mouseEventData->mouseButton.button == SDL_BUTTON_LEFT &&
+			mouseEventData->mouseButton.type == SDL_EVENT_MOUSE_BUTTON_UP)
+		{
+			isDragging = false;
 		}
 	}
-
-	
 }
-
-void Pawn::SetDeltaMove(int x, int y)
-{
-	DeltaMove.x = x;
-	DeltaMove.y = y;
-}
-
 bool Pawn::IsOverlapping(const Pawn& Other, const SDL_Point& Delta)
 {
 	bool isColliding = false;
 
-	SDL_Rect a = Sprite->GetImageBounds();
-	a.x = Position.x;
-	a.y = Position.y;
-	SDL_Rect b = Other.Sprite->GetImageBounds();
+	SDL_Rect a = GetCollisionBounds();
+	SDL_Rect b = Other.GetCollisionBounds();
 
-	// move X
-	a.x += Delta.x;
+	a.y += Delta.y;
 	if (SDL_HasRectIntersection(&a, &b))
 	{
-		if (Delta.x > 0) a.x = b.x - a.w;        // right
-		else if (Delta.x < 0) a.x = b.x + b.w;   // left
+		if (Delta.y > 0)      // Falling down
+			a.y = b.y - a.h;  // Snap to TOP of platform
+		else if (Delta.y < 0) // Jumping up
+			a.y = b.y + b.h;  // Snap to BOTTOM of platform
 
 		isColliding = true;
 	}
 
-	// move Y
-	a.y += Delta.y;
+	a.x += Delta.x;
 	if (SDL_HasRectIntersection(&a, &b))
 	{
-		if (Delta.y > 0) a.y = b.y - a.h;        // down
-		else if (Delta.y < 0) a.y = b.y + b.h;   // up
+		if (Delta.x > 0)      // Moving Right
+			a.x = b.x - a.w;  // Snap to LEFT side of wall
+		else if (Delta.x < 0) // Moving Left
+			a.x = b.x + b.w;  // Snap to RIGHT side of wall
 
 		isColliding = true;
 	}
@@ -133,7 +138,7 @@ SDL_Rect Pawn::GetCollisionBounds() const
 {
 	SDL_Rect i = Sprite->GetImageBounds();
 	i.x = Position.x;
-	i.y = Position.y;
+	i.y = Position.y; 
 	return i;
 }
 

@@ -68,10 +68,10 @@ AssetWindow::AssetWindow(const std::shared_ptr<SDL_Renderer>& pRenderer)
                 ImGui::Image((ImTextureID)content[i]->GetTextureRef().get(), { 100,100 });
                 ImGui::EndDragDropSource();
             }
-            //////////////////////////////// For Dragging
+           
 
             ImGui::PopID();
-            ImGui::SameLine();
+          //  ImGui::SameLine();
         }
 
      //   ImGui::EndTable();

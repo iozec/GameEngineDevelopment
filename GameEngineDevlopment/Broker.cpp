@@ -22,6 +22,7 @@ void Broker::Publish(const std::string& topic, IEventData* message) {
 }
 
 
+
  Broker& const Broker::INSTANCE()
 {
     if (!Broker::_instance)

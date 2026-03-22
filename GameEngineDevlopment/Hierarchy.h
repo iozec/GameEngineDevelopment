@@ -21,15 +21,12 @@
             renderer = rendererPtr;
         }
 
-        const std::vector<Pawn*>& GetHierarchyList() const 
-        { 
-            return HierarchyList; 
-        }
+        const std::vector<Pawn*>& GetHierarchyList() const;
 
-        Hierarchy()
-        {
-        };
 
+        Hierarchy() {};
+
+       
         static Hierarchy* _instance;
         static Hierarchy& const INSTANCE();
 

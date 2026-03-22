@@ -1,6 +1,7 @@
 #include "Player.h"
 #include "Input.h"
 #include "Message.h"
+#include "Hierarchy.h"
 
 Player::Player(std::shared_ptr<SDL_Renderer> renderer,
 	const std::string path, int x, int y, bool isTransparent) :
@@ -41,6 +42,34 @@ void Player::Update() {
 	DeltaMove.y += gravity;
 
 	DeltaMove.y = std::min(DeltaMove.y, maxFallSpeed);
+
+	bool isTouchingSomething = false;
+
+	for (Pawn* platform : Hierarchy::INSTANCE().GetHierarchyList())
+	{
+	
+		if (platform == this) continue;
+
+		
+		if (this->IsOverlapping(*platform, DeltaMove))
+		{
+		
+			if (DeltaMove.y > 0)
+			{
+				this->Grounded = true;
+				this->Position.y = platform->GetCollisionBounds().y - this->GetCollisionBounds().h;
+				this->DeltaMove.y = 0;
+			}
+			isTouchingSomething = true;
+			break; 
+		}
+	}
+
+	if (!isTouchingSomething)
+	{
+		this->Grounded = false;
+		this->Position.y += DeltaMove.y;
+	}
 };
 
 

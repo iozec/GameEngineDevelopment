@@ -1,0 +1,19 @@
+{
+    "ProjectObjects": [
+        {
+            "path": "./../assets/monster.bmp",
+            "x": 202,
+            "y": 586
+        },
+        {
+            "path": "./../assets/monstertrans.bmp",
+            "x": 200,
+            "y": 200
+        },
+        {
+            "path": "./../assets/Platform.png",
+            "x": 200,
+            "y": 700
+        }
+    ]
+}

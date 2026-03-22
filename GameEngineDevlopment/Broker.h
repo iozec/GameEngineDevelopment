@@ -19,9 +19,7 @@
 
 		static Broker* _instance;
 		static Broker& const INSTANCE();
-
-		
-
+	
 		void Subscribe(const std::string& topic, Subscriber* sub);
 		void Publish(const std::string& topic, IEventData* message);
 

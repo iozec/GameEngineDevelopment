@@ -8,6 +8,7 @@
 
 template<typename T>
 concept componentType = std::is_same_v< T, I_ComponentBase >;
+
 class GameObject : public Publisher, public ISaveLoadable
 {
 

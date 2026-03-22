@@ -7,6 +7,23 @@
 
 void EditorGui::DrawWindow()
 {
+
+    if (ImGui::IsMouseReleased(ImGuiMouseButton_Left))
+    {
+        if (AssetMouseDrag != nullptr)
+        {
+            ImVec2 mousePos = ImGui::GetMousePos();
+
+            Hierarchy::INSTANCE().AddGameObject(
+                AssetMouseDrag->GetDirectoryEntry().path().string(),
+                (int)mousePos.x,
+                (int)mousePos.y,
+                true);
+
+            AssetMouseDrag = nullptr;
+        }
+    }
+
 }
 
 

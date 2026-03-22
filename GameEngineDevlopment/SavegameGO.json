@@ -13,13 +13,13 @@
         },
         {
             "ScriptComponent": {
-                "scriptPath": "./../luaSrc/ComponentTest.lua",
+                "scriptPath": "./../luaSrc/EnemyScr.lua",
                 "type": "ScriptComponent"
             }
         }
     ],
     "Transform": {
-        "LocationX": 232,
+        "LocationX": 296,
         "LocationY": 400
     }
 }

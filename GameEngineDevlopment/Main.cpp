@@ -334,6 +334,7 @@ int main(int argc, char* argv[])
         Platform platform(Rendere,
             "./../assets/Platform.png", 200, 700, true);
 
+
         GameObject gameObject;
 
         gameObject.transform.SetX(400);
@@ -343,7 +344,7 @@ int main(int argc, char* argv[])
             rendere, "./../Assets/monstertrans.bmp", 300, 200, true, &gameObject);
         gameObject.AddComponent(temp);
         std::shared_ptr<ScriptComponent> scriptTest = std::make_shared<ScriptComponent>(
-            "./../luaSrc/ComponentTest.lua", &gameObject);
+            "./../luaSrc/EnemyScr.lua", &gameObject);
         gameObject.AddComponent(scriptTest);
 
         monster.Subscribe("MouseButtonUpdate");
@@ -356,6 +357,7 @@ int main(int argc, char* argv[])
 
         Hierarchy::INSTANCE().AddPawn(&player);
         Hierarchy::INSTANCE().AddPawn(&monster);
+        Hierarchy::INSTANCE().AddPawn(&platform);
 
         monster.Subscribe("Test");
 
@@ -375,22 +377,7 @@ int main(int argc, char* argv[])
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO(); (void)io;
-    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;    // Enable Keyboard Controls
-    io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;     // Enable Gamepad Controls
 
-    // Setup Dear ImGui style
-    ImGui::StyleColorsDark();
-    //ImGui::StyleColorsLight();
-
-    // Setup scaling
-    ImGuiStyle& style = ImGui::GetStyle();
-    float main_scale = SDL_GetDisplayContentScale(SDL_GetPrimaryDisplay());
-    style.ScaleAllSizes(main_scale);     // Bake a fixed style scale.
-    // (Until we have a solution for dynamic style scaling, changing this
-    // requires resetting style + calling this again)
-    style.FontScaleDpi = main_scale;     // Set initial font scale.
-    // (Using io.ConfigFlags |= ImGuiConfigFlags_DpiScaleFonts = true makes this unnecessary.
-    // We leave both here for documentation purpose)
 
     // Setup Platform/Renderer backends
     ImGui_ImplSDL3_InitForSDLRenderer(win, rendere.get());
@@ -398,145 +385,93 @@ int main(int argc, char* argv[])
 
     AssetWindow* assetWindow = new AssetWindow(rendere);
 
-    //////////////////////
-    // ImGUI
-    //////////////////////
+
 
     while (IsRunning)
     {
         ProfilerSystem::Instance().StartFrame();
 
+        // INPUT & EVENTS
         SDL_Event e;
         while (SDL_PollEvent(&e))
         {
             Input::INSTANCE().UpdateMouse(e);
             ImGui_ImplSDL3_ProcessEvent(&e);
             switch (e.type) {
-
             case SDL_EVENT_QUIT:
                 IsRunning = false;
                 break;
             case SDL_EVENT_KEY_DOWN:
-                if(e.key.scancode == SDL_SCANCODE_0)
-					SaveLoadSystem::INSTANCE().SaveGame("SavegameGO.json", gameObject);
-				else if (e.key.scancode == SDL_SCANCODE_P)
+                if (e.key.scancode == SDL_SCANCODE_0)
+                    SaveLoadSystem::INSTANCE().SaveGame("SavegameGO.json", gameObject);
+                else if (e.key.scancode == SDL_SCANCODE_P)
                     SaveLoadSystem::INSTANCE().LoadGame("SavegameGO.json", gameObject, rendere);
-				break;
-
-            default:
                 break;
             }
         }
-
         Input::INSTANCE().UpdateKeyBoard();
-        /*if (Input::INSTANCE().isKeyHeld(SDL_SCANCODE_UP))
-            player.UpdatePosition(0, -1);
-        if (Input::INSTANCE().isKeyHeld(SDL_SCANCODE_DOWN))
-            player.UpdatePosition(0, 1);
-        if (Input::INSTANCE().isKeyHeld(SDL_SCANCODE_LEFT))
-            player.UpdatePosition(-1, 0);
-        if (Input::INSTANCE().isKeyHeld(SDL_SCANCODE_RIGHT))
-            player.UpdatePosition(1, 0);*/
 
-        // Update background color based on input
-        if (Input::INSTANCE().isKeyHeld(SDL_SCANCODE_1))
-            backgroundColor = { 255, 0, 0, 255 };
+        // LOGIC & PHYSICS UPDATES
+        // Update ECS systems
+        MovementSystem::UpdatePositions(ecs);
 
-        if (Input::INSTANCE().isKeyHeld(SDL_SCANCODE_2))
-            backgroundColor = { 0, 255, 0, 255 };
+        // Update Hierarchy Pawns (Includes player, monster, and dragged platforms)
+        for (Pawn* p : Hierarchy::INSTANCE().GetHierarchyList()) {
+            p->Update();
+        }
 
-        if (Input::INSTANCE().isKeyHeld(SDL_SCANCODE_3))
-            backgroundColor = { 0, 0, 255, 255 };
+        // Update independent GameObjects
+        gameObject.Update();
 
-        if (Input::INSTANCE().isKeyHeld(SDL_SCANCODE_4))
-            backgroundColor = { 0, 100, 200, 128 };
+        // Logic for Grounded state
+        int oldY = player.Position.y;
 
-        
+        if (player.Position.y == oldY + player.DeltaMove.y && player.DeltaMove.y > 0)
+            player.Grounded = false;
+        else if (player.DeltaMove.y >= 0)
+            player.Grounded = (player.Position.y < oldY + player.DeltaMove.y);
 
-            SDL_RenderClear(rendere.get());
+        // IMGUI FRAME START
+        ImGui_ImplSDLRenderer3_NewFrame();
+        ImGui_ImplSDL3_NewFrame();
+        ImGui::NewFrame();
 
-            // Start the Dear ImGui frame
-            ImGui_ImplSDLRenderer3_NewFrame();
-            ImGui_ImplSDL3_NewFrame();
-            ImGui::NewFrame();
+        // RENDERING
+        // Clear Screen
+        SDL_SetRenderDrawColor(rendere.get(), backgroundColor.r, backgroundColor.g, backgroundColor.b, backgroundColor.a);
+        SDL_RenderClear(rendere.get());
 
-            DrawProfileData(io);
+        // Draw ECS Entities
+        RendererSystem::Render(ecs, rendere);
 
-            EditorGui::INSTANCE().DrawWindows();
-            Hierarchy::INSTANCE().Draw();
-            assetWindow->DrawWindow();
+        // Draw Hierarchy and World Objects
+        {
+            PROFILE("WorldRender");
+ 
+            Hierarchy::INSTANCE().DrawHierarchyItems();
+        }
 
+        // Draw Editor/UI Windows
+        DrawProfileData(io);
+        EditorGui::INSTANCE().DrawWindows();
+        Hierarchy::INSTANCE().Draw();
+        EditorGui::INSTANCE().DrawWindow();
+        assetWindow->DrawWindow();
+        ImGui::ShowDemoWindow();
 
+        // Finalize ImGui and Swap Buffers
+        ImGui::Render();
+        SDL_SetRenderScale(rendere.get(), io.DisplayFramebufferScale.x, io.DisplayFramebufferScale.y);
+        ImGui_ImplSDLRenderer3_RenderDrawData(ImGui::GetDrawData(), rendere.get());
 
-            // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()!
-            // You can browse its code to learn more about Dear ImGui).
-            ImGui::ShowDemoWindow();
+        // PRESENT (Only once)
+        SDL_RenderPresent(rendere.get());
 
-			ImGui::Begin("the First Window");      // Create a window called "Hello, world!" and append into it.)
-            if (ImGui::Button("Press me"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
-                std::cout << "Button Pressed" << std::endl;
-
-            static float test[2];
-			ImGui::InputFloat2("Test Input float", test);
-            ImGui::End();
-
-            MovementSystem::UpdatePositions(ecs);
-            RendererSystem::Render(ecs, rendere);
-            gameObject.Update();
-
-            
-            //player.DrawCollider(player.GetCollisionBounds());
-            player.Update();
-            monster.Update();
-
-            int oldY = player.Position.y;
-
-            player.IsOverlapping(monster, player.DeltaMove);
-            player.IsOverlapping(platform, player.DeltaMove);
-
-
-            if (player.Position.y == oldY + player.DeltaMove.y && player.DeltaMove.y > 0)
-                player.Grounded = false;
-            else if (player.DeltaMove.y >= 0)
-                player.Grounded = (player.Position.y < oldY + player.DeltaMove.y); 
-            
-           
-
-            
-			Hierarchy::INSTANCE().DrawHierarchyItems();
-            {
-                PROFILE("PlayerRender");
-                player.Draw();
-                monster.Draw();
-                platform.Draw();
-            }
-            //monster.DrawCollider(monster.GetCollisionBounds());
-            // 
-            // Rendering
-            ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
-            ImGui::Render();
-            SDL_SetRenderScale(rendere.get(), io.DisplayFramebufferScale.x, io.DisplayFramebufferScale.y);
-            SDL_SetRenderDrawColorFloat(rendere.get(), clear_color.x, clear_color.y, clear_color.z, clear_color.w);
-            ImGui_ImplSDLRenderer3_RenderDrawData(ImGui::GetDrawData(), rendere.get());
-
-            SDL_RenderPresent(rendere.get());
-
-            SDL_RenderPresent(rendere.get());
-
-
-            Input::INSTANCE().LateUpdate();
-
-            
-            SDL_Delay(16);
-            //void Update();
-        
-
-            ProfilerSystem::Instance().EndFrame();
+        Input::INSTANCE().LateUpdate();
+        SDL_Delay(16);
+        ProfilerSystem::Instance().EndFrame();
     } // end of main loop
     ProfilerSystem::Instance().WriteDataToCSV();
-
-    
-
 
 
 
