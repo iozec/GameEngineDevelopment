@@ -30,6 +30,15 @@ void Hierarchy::DrawHierarchyItems()
     {
         HierarchyList[i]->Draw();
     }
+
+    for (Pawn* p : Hierarchy::INSTANCE().GetHierarchyList())
+    {
+        
+        if (p->m_IsActive == true)
+        {
+            p->Draw();
+        }
+    }
 }
 
 void Hierarchy::DrawPawnNode(Pawn* pawn, ImGuiTreeNodeFlags nodeFlags)

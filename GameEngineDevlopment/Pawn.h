@@ -23,6 +23,7 @@ public:
     virtual ~Pawn() {}
 
     int ID = 0;
+    bool m_IsActive = true;
 	static int CurrentID;
     bool isDragging = false;
     SDL_Point dragOffset = { 0, 0 };

@@ -35,7 +35,7 @@ void Player::Update() {
 
 	if (Input::INSTANCE().isKeyHeld(SDL_SCANCODE_SPACE)) {
 
-		DeltaMove.y = -15;
+		DeltaMove.y = -2;
 		Grounded = false;
 	}
 
@@ -45,23 +45,61 @@ void Player::Update() {
 
 	bool isTouchingSomething = false;
 
-	for (Pawn* platform : Hierarchy::INSTANCE().GetHierarchyList())
-	{
-	
-		if (platform == this) continue;
+	//for (Pawn* platform : Hierarchy::INSTANCE().GetHierarchyList())
+	//{
+	//
+	//	if (platform == this) continue;
 
-		
-		if (this->IsOverlapping(*platform, DeltaMove))
+	//	
+	//	if (this->IsOverlapping(*platform, DeltaMove))
+	//	{
+	//	
+	//		if (DeltaMove.y > 0)
+	//		{
+	//			this->Grounded = true;
+	//			this->Position.y = platform->GetCollisionBounds().y - this->GetCollisionBounds().h;
+	//			this->DeltaMove.y = 0;
+	//		}
+	//		isTouchingSomething = true;
+	//		break; 
+	//	}
+	//}
+
+	//if (!isTouchingSomething)
+	//{
+	//	this->Grounded = false;
+	//	this->Position.y += DeltaMove.y;
+	//}
+
+
+	for (Pawn* p : Hierarchy::INSTANCE().GetHierarchyList())
+	{
+		if (p == this || !p->m_IsActive) continue;
+
+		if (this->IsOverlapping(*p, DeltaMove))
 		{
-		
-			if (DeltaMove.y > 0)
+			if (p->ID == 99)
 			{
-				this->Grounded = true;
-				this->Position.y = platform->GetCollisionBounds().y - this->GetCollisionBounds().h;
-				this->DeltaMove.y = 0;
+				this->hasKey = true;   
+				if (hasKey = true)
+				{
+					m_IsActive = false;
+				}
+ 				printf("Key Collected!\n");
+
 			}
-			isTouchingSomething = true;
-			break; 
+		
+			else
+			{
+				if (DeltaMove.y > 0) 
+				{
+					this->Grounded = true;
+					this->Position.y = p->GetCollisionBounds().y - this->GetCollisionBounds().h;
+					this->DeltaMove.y = 0;
+				}
+				isTouchingSomething = true;
+				break; 
+			}
 		}
 	}
 
@@ -70,6 +108,7 @@ void Player::Update() {
 		this->Grounded = false;
 		this->Position.y += DeltaMove.y;
 	}
+
 };
 
 

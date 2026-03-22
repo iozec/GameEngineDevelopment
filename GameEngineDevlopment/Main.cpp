@@ -31,6 +31,7 @@
 #include "ProfilerSystem.h"
 #include "Platform.h"
 #include "AssetWindow.h"
+#include "Key.h"
 //#include <imgui_widgets.cpp>
 
 //void SavePlayerToJson(const Pawn& Player)
@@ -333,6 +334,24 @@ int main(int argc, char* argv[])
         "./../assets/monstertrans.bmp", 200, 200, true);
         Platform platform(Rendere,
             "./../assets/Platform.png", 200, 700, true);
+        Key key(Rendere,
+            "./../assets/Key.png", 600, 400, true);
+
+        for (int i = 0; i < 5; i++) {
+           
+            Platform* floor = new Platform(Rendere, "./../assets/Platform.png", i * 200, 700, true);
+            Hierarchy::INSTANCE().AddPawn(floor);
+        }
+
+       
+        Platform* plat1 = new Platform(Rendere, "./../assets/Platform.png", 400, 500, true);
+        Hierarchy::INSTANCE().AddPawn(plat1);
+
+        Platform* plat2 = new Platform(Rendere, "./../assets/Platform.png", 700, 350, true);
+        Hierarchy::INSTANCE().AddPawn(plat2);
+
+        Platform* plat3 = new Platform(Rendere, "./../assets/Platform.png", 1000, 500, true);
+        Hierarchy::INSTANCE().AddPawn(plat3);
 
 
         GameObject gameObject;
@@ -358,6 +377,7 @@ int main(int argc, char* argv[])
         Hierarchy::INSTANCE().AddPawn(&player);
         Hierarchy::INSTANCE().AddPawn(&monster);
         Hierarchy::INSTANCE().AddPawn(&platform);
+        Hierarchy::INSTANCE().AddPawn(&key);
 
         monster.Subscribe("Test");
 
@@ -423,13 +443,14 @@ int main(int argc, char* argv[])
         // Update independent GameObjects
         gameObject.Update();
 
-        // Logic for Grounded state
+        // Logic for Grounded
         int oldY = player.Position.y;
 
         if (player.Position.y == oldY + player.DeltaMove.y && player.DeltaMove.y > 0)
             player.Grounded = false;
         else if (player.DeltaMove.y >= 0)
             player.Grounded = (player.Position.y < oldY + player.DeltaMove.y);
+
 
         // IMGUI FRAME START
         ImGui_ImplSDLRenderer3_NewFrame();

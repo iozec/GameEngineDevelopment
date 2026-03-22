@@ -21,6 +21,8 @@ public:
 	
 	void Update() override;
 
+	bool hasKey = false;
+
 };
 
 
