@@ -71,7 +71,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LibraryPath>$(SolutionDir)\Libraries\lua;$(SolutionDir)\Libraries\SDL3_image-3.2.4\lib\x64;$(SolutionDir)\Libraries\SDL3-3.2.26\lib\x64;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)\Libraries\irrKland\lib\Winx64-visualStudio;$(SolutionDir)\Libraries\lua;$(SolutionDir)\Libraries\SDL3_image-3.2.4\lib\x64;$(SolutionDir)\Libraries\SDL3-3.2.26\lib\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -105,13 +105,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)GameEngineDevlopment\imGUI;$(SolutionDir)\Libraries\SDL3_image-3.2.4\include;$(SolutionDir)\Libraries\SDL3-3.2.26\include;$(SolutionDir)\Libraries\lua\include;$(SolutionDir)\Libraries\JSON\single_include\nlohmann;$(SolutionDir)\Libraries;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\Libraries\irrKlang\include;$(SolutionDir)GameEngineDevlopment\imGUI;$(SolutionDir)\Libraries\SDL3_image-3.2.4\include;$(SolutionDir)\Libraries\SDL3-3.2.26\include;$(SolutionDir)\Libraries\lua\include;$(SolutionDir)\Libraries\JSON\single_include\nlohmann;$(SolutionDir)\Libraries;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>SDL3.lib;%(AdditionalDependencies);SDL3_image.lib;liblua54.a</AdditionalDependencies>
+      <AdditionalDependencies>SDL3.lib;%(AdditionalDependencies);SDL3_image.lib;liblua54.a;irrKlang.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

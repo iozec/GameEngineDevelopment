@@ -19,6 +19,7 @@
 #include "RendererSystem.h"
 #include "MovementSystem.h"
 #include "StackArenaAllocator.h"
+#include "irrKlang.h"
 #include <random>
 #include <iostream>
 #include <fstream>
@@ -231,6 +232,8 @@ void DrawProfileData(ImGuiIO& io)
     ImGui::End();
 }
 
+
+
 int main(int argc, char* argv[])
 {
 /////
@@ -259,7 +262,7 @@ int main(int argc, char* argv[])
     if (!SDL_Init(SDL_INIT_AUDIO | SDL_INIT_VIDEO | SDL_INIT_EVENTS)) {
         printf("error initializing SDL: %s\n", SDL_GetError());
     }
-    SDL_Window* win = SDL_CreateWindow("GAME", 1000, 1000, 0);
+    SDL_Window* win = SDL_CreateWindow("GAME", 1920, 1080, 0);
     SDL_SetWindowPosition(win, SDL_WINDOWPOS_CENTERED,
         SDL_WINDOWPOS_CENTERED);
     std::shared_ptr<SDL_Renderer> rendere =
@@ -269,6 +272,20 @@ int main(int argc, char* argv[])
     std::shared_ptr<SDL_Renderer> Rendere = std::shared_ptr<SDL_Renderer>(rendere);
 
 	Hierarchy::INSTANCE().Init(Rendere);
+
+    irrklang::ISoundEngine* soundEngine = irrklang::createIrrKlangDevice();
+    if (!soundEngine)
+    {
+    std::cout <<("Could not startup sound engine\n");
+    std::cerr << "Could not startup sound engine\n" << std::endl;
+    }
+    else
+    {
+    std::cout << ("Sound engine started\n");
+    std::cout << "Sound engine started\n" << std::endl;
+    }
+
+    soundEngine->play2D("./../Libraries/irrKlang/media/getout.ogg", true);
 
     //Sprites
       //RendererSystem::AddBitmapComponentToEntity(0, ecs,
@@ -337,7 +354,7 @@ int main(int argc, char* argv[])
         Key key(Rendere,
             "./../assets/Key.png", 600, 400, true);
 
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 9; i++) {
            
             Platform* floor = new Platform(Rendere, "./../assets/Platform.png", i * 200, 700, true);
             Hierarchy::INSTANCE().AddPawn(floor);
@@ -422,10 +439,14 @@ int main(int argc, char* argv[])
                 IsRunning = false;
                 break;
             case SDL_EVENT_KEY_DOWN:
-                if (e.key.scancode == SDL_SCANCODE_0)
+                if (e.key.scancode == SDL_SCANCODE_ESCAPE) {
+                    IsRunning = false;
+                }
+                else if (e.key.scancode == SDL_SCANCODE_0)
                     SaveLoadSystem::INSTANCE().SaveGame("SavegameGO.json", gameObject);
                 else if (e.key.scancode == SDL_SCANCODE_P)
                     SaveLoadSystem::INSTANCE().LoadGame("SavegameGO.json", gameObject, rendere);
+
                 break;
             }
         }
@@ -499,6 +520,10 @@ int main(int argc, char* argv[])
     //SDL_DestroyRenderer(rendere);
     SDL_DestroyWindow(win);
     SDL_Quit();
+
+    soundEngine->drop();
+
+    return 0;
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
