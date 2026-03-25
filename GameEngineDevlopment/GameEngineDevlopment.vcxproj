@@ -71,7 +71,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LibraryPath>$(SolutionDir)\Libraries\irrKland\lib\Winx64-visualStudio;$(SolutionDir)\Libraries\lua;$(SolutionDir)\Libraries\SDL3_image-3.2.4\lib\x64;$(SolutionDir)\Libraries\SDL3-3.2.26\lib\x64;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)\Libraries\irrKlang\lib\Winx64-visualStudio;$(SolutionDir)\Libraries\lua;$(SolutionDir)\Libraries\SDL3_image-3.2.4\lib\x64;$(SolutionDir)\Libraries\SDL3-3.2.26\lib\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -134,6 +134,7 @@
     <ClCompile Include="BitmapComponent.cpp" />
     <ClCompile Include="Broker.cpp" />
     <ClCompile Include="Debug.cpp" />
+    <ClCompile Include="Door.cpp" />
     <ClCompile Include="ECS.cpp" />
     <ClCompile Include="EditorGui.cpp" />
     <ClCompile Include="Hierarchy.cpp" />
@@ -178,6 +179,7 @@
     <ClInclude Include="Components.hpp" />
     <ClInclude Include="Debug.h" />
     <ClInclude Include="Deleter.h" />
+    <ClInclude Include="Door.h" />
     <ClInclude Include="ECS.h" />
     <ClInclude Include="EditorGui.h" />
     <ClInclude Include="GameObject.h" />

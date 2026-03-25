@@ -8,6 +8,7 @@ Player::Player(std::shared_ptr<SDL_Renderer> renderer,
 	Pawn(renderer, path, x, y, isTransparent)
 	
 {
+	this->ObjectType = GameObject::ObjectTypes::Player;
 }
 
 void Player::Update() {
@@ -75,20 +76,34 @@ void Player::Update() {
 	for (Pawn* p : Hierarchy::INSTANCE().GetHierarchyList())
 	{
 		if (p == this || !p->m_IsActive) continue;
-
+		//key pickup code
 		if (this->IsOverlapping(*p, DeltaMove))
 		{
-			if (p->ID == 99)
+			if (p->ObjectType == ObjectTypes::Key)
 			{
 				this->hasKey = true;   
-				if (hasKey = true)
-				{
-					m_IsActive = false;
-				}
+		
+				p->m_IsActive = false;
+
  				printf("Key Collected!\n");
 
 			}
-		
+			// door opening code
+			if (this->IsOverlapping(*p, DeltaMove))
+			{
+				if (p->ObjectType == GameObject::ObjectTypes::Door)
+					int i = 0;
+
+				if (p->ObjectType == GameObject::ObjectTypes::Door && this->hasKey == true)
+				{
+					
+					p->m_IsActive = false;
+
+					printf("DOOR OPENED!\n");
+
+				}
+			}
+		//platform grounded code
 			else
 			{
 				if (DeltaMove.y > 0) 

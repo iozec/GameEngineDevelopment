@@ -9,10 +9,24 @@
 template<typename T>
 concept componentType = std::is_same_v< T, I_ComponentBase >;
 
+
+
 class GameObject : public Publisher, public ISaveLoadable
 {
 
+	
+
 public:
+
+	enum ObjectTypes
+	{
+		NoneObject,
+		Door,
+		DoorOpen,
+		Player,
+		Enemy,
+		Key
+	};
 
 	void Update();
 

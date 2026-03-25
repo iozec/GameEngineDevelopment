@@ -145,8 +145,11 @@ SDL_Rect Pawn::GetCollisionBounds() const
 
 void Pawn::Draw()
 {
-	Sprite->Draw(Position.x, Position.y);
-	this->DrawCollider(this->GetCollisionBounds());
+	if (m_IsActive)
+	{
+		Sprite->Draw(Position.x, Position.y);
+		this->DrawCollider(this->GetCollisionBounds());
+	}
 }
 void Pawn::DrawCollider(SDL_Rect Collider) const
 {

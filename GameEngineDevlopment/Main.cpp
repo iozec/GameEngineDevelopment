@@ -33,6 +33,7 @@
 #include "Platform.h"
 #include "AssetWindow.h"
 #include "Key.h"
+#include "Door.h"
 //#include <imgui_widgets.cpp>
 
 //void SavePlayerToJson(const Pawn& Player)
@@ -105,7 +106,7 @@ void DrawProfileData(ImGuiIO& io)
         selectedFrame = -1;
     }
     static int range[2] = { 0, 100 };
-
+    // Minimum greater than max Crash  FIX 
     if (FrameTimes && FrameTimes->size() > 100)
     {
         ImGui::SliderInt2("Frame Range", range, 0, FrameTimes->size());
@@ -353,6 +354,8 @@ int main(int argc, char* argv[])
             "./../assets/Platform.png", 200, 700, true);
         Key key(Rendere,
             "./../assets/Key.png", 600, 400, true);
+        Door door(Rendere,
+            "./../assets/Door-Closed.png", 600, 400, true);
 
         for (int i = 0; i < 9; i++) {
            
@@ -369,6 +372,14 @@ int main(int argc, char* argv[])
 
         Platform* plat3 = new Platform(Rendere, "./../assets/Platform.png", 1000, 500, true);
         Hierarchy::INSTANCE().AddPawn(plat3);
+
+        Pawn* doorO = new Pawn(Rendere, "./../assets/Door-Open.png", 1654, 582, true);
+        Hierarchy::INSTANCE().AddPawn(doorO);
+
+        Door* doorC = new Door(Rendere, "./../assets/Door-Closed.png", 1654, 582, true);
+        Hierarchy::INSTANCE().AddPawn(doorC);
+
+        
 
 
         GameObject gameObject;
@@ -461,8 +472,7 @@ int main(int argc, char* argv[])
             p->Update();
         }
 
-        // Update independent GameObjects
-        gameObject.Update();
+
 
         // Logic for Grounded
         int oldY = player.Position.y;
@@ -483,6 +493,8 @@ int main(int argc, char* argv[])
         SDL_SetRenderDrawColor(rendere.get(), backgroundColor.r, backgroundColor.g, backgroundColor.b, backgroundColor.a);
         SDL_RenderClear(rendere.get());
 
+        // Update independent GameObjects
+        gameObject.Update();
         // Draw ECS Entities
         RendererSystem::Render(ecs, rendere);
 

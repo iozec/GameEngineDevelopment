@@ -18,11 +18,12 @@ protected:
 
 public:
     Pawn(std::shared_ptr<SDL_Renderer> renderer, const std::string path,
-        int x, int y, bool isTransparent );
+        int x, int y, bool isTransparent);
 
     virtual ~Pawn() {}
 
     int ID = 0;
+    ObjectTypes ObjectType = GameObject::ObjectTypes::NoneObject;
     bool m_IsActive = true;
 	static int CurrentID;
     bool isDragging = false;
