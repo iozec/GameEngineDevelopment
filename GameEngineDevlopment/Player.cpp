@@ -88,6 +88,7 @@ void Player::Update() {
  				printf("Key Collected!\n");
 
 			}
+
 			// door opening code
 			if (this->IsOverlapping(*p, DeltaMove))
 			{
@@ -101,6 +102,21 @@ void Player::Update() {
 
 					printf("DOOR OPENED!\n");
 
+				}
+			}
+
+			if (this->IsOverlapping(*p, DeltaMove))
+			{
+				if (p->ObjectType == GameObject::ObjectTypes::Enemy)
+				{
+					this->Position.x = 100;
+					this->Position.y = 100;
+
+
+					this->DeltaMove.x = 0;
+					this->DeltaMove.y = 0;
+
+					printf("Monster has Captured the player\n");
 				}
 			}
 		//platform grounded code

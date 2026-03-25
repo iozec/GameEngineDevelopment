@@ -349,7 +349,7 @@ int main(int argc, char* argv[])
         Player player(Rendere,
         "./../assets/monster.bmp", 100, 200, true);
         Monster monster(Rendere,
-        "./../assets/monstertrans.bmp", 200, 200, true);
+        "./../assets/monstertrans.bmp", 1200, 582, true);
         Platform platform(Rendere,
             "./../assets/Platform.png", 200, 700, true);
         Key key(Rendere,
